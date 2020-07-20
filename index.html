@@ -37,11 +37,11 @@
         }
         #background {
             position: fixed;
-            right: 0;
             z-index: -1;
-            bottom: 0;
-            min-width: 100%;
-            /* min-height: 100%; */
+            
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
     </style>
     <body class="trans-bg">
@@ -116,5 +116,18 @@
         
     </body>
     
+    <script>
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        if (height > width) {
+            width = "auto";
+            height = "100%";
+        } else {
+            width = "100%";
+            height = "auto";
+        }
+        document.getElementById("background").style.width = width;
+        document.getElementById("background").style.height = height;
+    </script>
 
 </html>
