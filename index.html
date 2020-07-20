@@ -10,7 +10,7 @@
 
     <style>
         html {
-            background-image: url('coverpic.jpg');
+            background-color: #161;
             background-size: 100% auto;
         }
         body {
@@ -35,8 +35,19 @@
             width: 16rem;
             border: none;
         }
+        #background {
+            position: fixed;
+            right: 0;
+            z-index: -1;
+            bottom: 0;
+            min-width: 100%;
+            /* min-height: 100%; */
+        }
     </style>
     <body class="trans-bg">
+        <video autoplay muted loop id="background">
+            <source src="rendering.mp4" type="video/mp4">
+        </video>
         <div class="jumbotron jumbotron-fluid light-bg">
             <div class="container">
                 <div>
