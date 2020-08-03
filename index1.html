@@ -11,7 +11,13 @@
   <title>Abhishek Agarwal</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
+  <script type="text/javascript">
+    (() => {
+      var scale = 1 / (window.devicePixelRatio || 1);
+      var content = 'width=device-width, initial-scale=' + scale;
+      document.querySelector('meta[name="viewport"]').setAttribute('content', content)
+    })()
+  </script>
   <style>
     body {
       padding-top: 56px;
