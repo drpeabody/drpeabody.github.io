@@ -1,0 +1,102 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+	</head>
+	<body>
+		<div style="text-align: center;"> 
+			<h1> Schrodinger Equation Solvers </h1>
+			<ul>
+				<li><a href="#sc_"> Scattering States </a> </li>
+				<li><a href="#bd_"> Bound States </a> </li>
+			</ul>
+		</div>
+		<div>
+			<h1 id="sc_">Scattering States</h1>
+			<h2>Try to set the energy to show simulation!</h2>
+			<P>
+				Scattering states are not subject to Normalised Wavefunction 
+				boundary conditions, so any value of energy gives a physically
+				real scattering state.
+			</P>
+			Energy: 
+			<input type="range" min="1" max="100" value="50" id="sc_energy"> 
+			<p>Value: <span id="sc_energy_label">5 units</span></p>
+			<canvas id="scatter_canvas" width="800" height="400"></canvas>
+			<script type="text/javascript">
+				let sc_energy_bar = document.getElementById("sc_energy");
+				let sc_energy_lbl = document.getElementById("sc_energy_label");
+				sc_energy_bar.oninput = () => {
+					let e = sc_energy_bar.value;
+					sc_energy_lbl.innerHTML = e/10 + " units";
+
+					scatter_Vx = function(x) {
+						if (x > 3 && x < 3.5) return 8;
+						else return 0;
+					}
+
+					scatter_D = function (x, psi, phi) {
+						return -(4) * (e/10 - scatter_Vx(x)) * psi;
+					}
+					let scatter_sol = new Solver("scatter_canvas", 0, 5, 
+						scatter_Vx, scatter_D, 0.001);
+					scatter_sol.psi[scatter_sol.N] = 1;
+					scatter_sol.phi[scatter_sol.N] = 0;
+					scatter_sol.calculate(scatter_sol.N, 0, -1);
+					scatter_sol.draw({ min: -10, max: 10 });
+				}
+			</script>
+		</div>
+		<div>
+			<h1 id="bd_">Bound States</h1>
+			<h2>Try to set the energy to show simulation!</h2>
+			<P>
+				Bound States must be such that they go to zero at infinities. With these boundary conditions, and depending on the potential, only few energy values are allowed.
+			</P>
+			<P>
+				We take the example of finite square well and try to estimate one bound state energy.
+			</P>
+			<P>
+				If E is a bound state energy, then the wavefunction will be unbounded for E + dE and E - dE. However this unbounded will change its direction.
+			</P>
+			<P>
+				To see this in action, try to set E = 1.1 and E = 1.0 in the simulation below. The change in direction of the divergence indicates that there is a bound state for a finite value of energy that lies between 1.1 and 1.0. The error in this simulation is of the order of sqrt(N) ~ 0.1. So we estimate the bound energy to be 1.05 +- 0.1 units. Approximating this potential with an infinite square well potential shows that the first bound state energy is given by pi/3 units = 1.047 units.
+			</P>
+			<p> The higher energy states are increasingly less effective due to the infinite square well being a bad approximation for the finite well. The 2nd bound state energy predicted by this simulation is 4.05 +- 0.1 units, while the actual energy comes out to be around 4.386 units.</p>
+			Energy: 
+			<input type="text" id="bd_energy"> 
+			<p>Value: <span id="bd_energy_label">5 units</span></p>
+			<canvas id="bd_canvas" width="800" height="400"></canvas>
+			<script type="text/javascript">
+				let bd_energy_bar = document.getElementById("bd_energy");
+				let bd_energy_lbl = document.getElementById("bd_energy_label");
+
+				bd_energy_bar.oninput = () => {
+					let e = parseFloat(bd_energy_bar.value);
+					if(isNaN(e)) {
+						return;
+					}
+					bd_energy_lbl.innerHTML = e + " units";
+
+					bound_Vx = function(x) {
+						if (x > 1 && x < 4) return 0;
+						else return 2e2;
+					}
+
+					bound_D = function (x, psi, phi) {
+						return -(e - bound_Vx(x)) * psi;
+					}
+					let bound_sol = new Solver("bd_canvas", 0, 5, 
+						bound_Vx, bound_D, 0.001);
+					bound_sol.psi[bound_sol.N] = 0.00001;
+					bound_sol.phi[bound_sol.N] = 0;
+					bound_sol.calculate(bound_sol.N, 0, -1);
+					bound_sol.draw({ min: -110, max: 310 });
+				}
+			</script>
+		</div>
+		<br>
+		<canvas id="myChart" width="800" height="400"></canvas>
+	</body>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="solver.js"></script>
+</html>
