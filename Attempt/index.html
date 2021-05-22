@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+body {
+	font-family: "Times New Roman", Georgia, Serif;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display";
+  letter-spacing: 5px;
+}
+</style>
+<body>
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:1100px">
+
+  <!-- About Section -->
+  <div class="w3-row w3-padding-64" id="about">
+    <div class="w3-col m6 w3-padding-large w3-hide-small">
+     <img src="11.jpg" class="w3-round w3-image w3-opacity-min" alt="Table Setting" width="300" height="550" id="img1">
+    </div>
+
+    <div class="w3-col m6 w3-padding-large">
+      <h1 class="w3-center">About The Beauty That is on the left</h1><br>
+      <h5 class="w3-center">Spreading Happiness since 16 Oct, 1995</h5>
+      <p class="w3-large"> This beauty was found by many to be the source of their own happiness and stability. To say that
+      	she deserves all the love and care that people offer her is truly and understatement. The sheer magnitude of hard 
+        work, emotional strength, courage and caring God had to put in her meant that God took a short vacation to restore 
+        Their strength. <br>
+        And of course the day she isn't smiling, it seems the sun doesn't 
+        want to show up.</p>
+    </div>
+  </div>
+  
+  <hr>
+  
+  <!-- Menu Section -->
+  <div class="w3-row w3-padding-64" id="menu">
+    <div class="w3-col l6 w3-padding-large">
+      <h1 class="w3-center">Her Character Strengths</h1><br>
+      <h4>A Truck Load of Hardwork</h4>
+      <p > Started earning the youngest in her family, her legends of hardwork are hidden from none.</p><br>
+    
+      <h4>The Most Intense and Fulfilling Love</h4>
+      <p > Well, once she decides she loves you, you can't escape that easy, nor can you try and stop yourself from loving her.</p><br>
+    
+      <h4>God Like Beauty</h4>
+      <p > Even the most skilled Romans and Greek cannot chisel a marble like her curves, nor can the most talented 
+      Hura_Italian find a DSLR picture which does true justice to her beauty.</p><br>
+    
+      <h4>Unending Overflow of Support</h4>
+      <p >She can support you every second of the day and every day of the week, you won't even have to ask.</p><br>
+    
+      <h4>Meteor bearing Responsibility</h4>
+      <p >With her in the party, nothing can ever go wrong, all cabs are always negotiated, all friends are always returned home safely.
+      If she is around, you can relax like an 8 year old in his own home.</p>    
+    </div>
+    
+    <div class="w3-col l6 w3-padding-large">
+      <img src="/w3images/tablesetting.jpg" class="w3-round w3-image w3-opacity-min" alt="Menu" style="width:100%" id="img2">
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-64" id="contact">
+    <h1>To the one and only Delight Herself:</h1><br>
+    <p>
+    	I truly truly love you, there isn't a second when I am not thining about you and you make me go bat shit crazy in love like
+    	I believed I never could. I know things are hard right now, and if I cant understand you right now, I still love you, from 
+    	the bottom of my heart, ohh what I would give to see your smiling face again! 
+
+    	<br><br><br>	
+
+    	In my own way, in this way, I just wanted to let you know that no matter what is happening around us, I am here for you. If 
+    	there is one thing I can tell you for sure, it would be that I will put my every last breath to make you feel heard.
+
+    	<br><br><br>	
+    	<div style="font-size: 2em; text-align: center;">
+	    	Should this be the last thing I see <br>
+			I want you to know it's enough for me <br>
+			'Cause all that you are is all that I'll ever need <br>
+			I'm so in love <br>
+			So in love <br>
+			So in love <br>
+			So in love <br>
+			Lumiere, darling <br>
+			Lumiere over me <br>
+			Lumiere, darling <br>
+			Lumiere over me <br>
+			Lumiere, darling <br>
+			Lumiere over me <br>
+		</div>
+
+    </p>
+  </div>
+  
+<!-- End page content -->
+</div>
+
+<!-- Footer -->
+<footer class="w3-center w3-light-grey w3-padding-32">
+  <p>Made with <span style="color: red">&#9829;</span> by Niggerwala, 2021.</a></p>
+</footer>
+
+</body>
+</html>
+
+<script type="text/javascript">
+	
+	arr = {
+		0: "11.jpg",
+		1: "12.jpg",
+		2: "13.jpg",
+		3: "14.jpg",
+		4: "15.jpg",
+	};
+	arr2 = {
+		0: "21.jpg",
+		1: "22.jpg",
+		2: "23.jpg",
+		3: "24.jpg",
+		// 4: "25.jpg",
+	};
+	startTime = new Date();
+
+	time = function() {
+		let now = new Date();
+		return Math.round((-startTime.getTime() + now.getTime()) / 1000);
+	}
+
+	toIndex = function(arr, time) {
+		return time % Object.keys(arr).length;
+	}
+
+	update = function() {
+
+		let t = time();
+
+		document.getElementById("img1").src = arr[toIndex(arr, t)];
+		document.getElementById("img2").src = arr2[toIndex(arr2, t)];
+
+		setTimeout(update, 1000);
+	}
+
+	update();
+
+</script>
+</html>
