@@ -34,6 +34,7 @@
             margin-top: -35px;
         }
         .banner {
+            z-index: 99999;
             /* margin-top: 30vh; */
             font-family: 'PT Sans Narrow', sans-serif;
             font-size: 2.5em;
@@ -49,10 +50,17 @@
             background-size: cover;
             background-repeat: no-repeat;
             position: fixed;
+            z-index: -1;
             top: 0;
             right: 0;
             width: 50vw;
             height: 100vh;
+        }
+
+        @media (orientation: portrait) {
+            body {
+                margin-top: 10%;
+            }
         }
     </style>
     <body onmousedown="pop()">
