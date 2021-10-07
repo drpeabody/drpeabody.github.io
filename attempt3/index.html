@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap" rel="stylesheet"> 
+    </head>
+    <style>
+        body {
+            margin-left: 100px;
+            font-family: 'Sriracha', cursive;
+            background-size: cover;
+            background-image: url("back.jpg");
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+        .digit {
+            border-radius: 10px;
+            width: 100px;
+            display: inline-block;
+            height: 100px;
+            text-align: center;
+            vertical-align: middle;
+            color: #c1e5f3;
+        }
+        .counters {
+            line-height: 90px;
+            font-size: 40px;
+        }
+        .addendum {
+            margin-top: -35px;
+        }
+        .banner {
+            /* margin-top: 30vh; */
+            font-family: 'Open Sans', sans-serif;
+            font-size: 2em;
+            /* color: ; */
+        }
+        .right {
+            background-image: url("ila.jpg");
+            width: 50vw;
+            right: 0;
+            position: fixed;
+        }
+    </style>
+    <body onmousedown="pop()">
+        <div class="banner">
+            <h1 onmousedown=""><br><br>Its Ila's birthday in...</h1>
+        </div>
+        <div class="digit"style="background-color: #1151ff;">
+            <div id="days" class="counters"></div>
+            <div class="addendum">Days</div>
+        </div>
+        <div class="digit" style="background-color: #ff7c11;">
+            <div id="hours" class="counters"></div>
+            <div class="addendum">Hours</div>
+        </div>
+        <div class="digit" style="background-color: #0e800e;">
+            <div id="minutes" class="counters"></div>
+            <div class="addendum">Minutes</div>
+        </div>
+        <div class="digit" style="background-color: #921111;">
+            <div id="seconds" class="counters"></div>
+            <div class="addendum">Seconds</div>
+        </div>
+        <div class="right">
+            <!-- <img src="ila.jpg"/> -->
+        </div>
+    </body>
+    <script type="text/javascript">
+        const target = new Date(2021, 09, 16, 0, 0, 0, 0);
+
+        const backColor = "#c1e5f3";
+        
+        function update() {
+
+            let dT = new Date(target - new Date());
+            document.getElementById("days").innerHTML = dT.getDate();
+            document.getElementById("hours").innerHTML = dT.getHours();
+            document.getElementById("minutes").innerHTML = dT.getMinutes();
+            document.getElementById("seconds").innerHTML = dT.getSeconds();
+            setTimeout(update, 1000);
+        }
+
+        function pop() {
+            party.confetti(document.body, {
+                count: party.variation.range(0, 100),
+                size: party.variation.range(0.6, 3.4),
+            });
+        }
+
+        update();
+    </script>
+</html>
