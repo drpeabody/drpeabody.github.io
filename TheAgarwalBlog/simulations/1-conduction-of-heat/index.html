@@ -10,213 +10,217 @@
                 text-align: center;
                 white-space: pre;
             }
-            p {
+            h1 {
+                padding-top: 10vh;
+            }
+            h1, h2, p {
                 padding-left: 10vw;
                 padding-right: 10vw;
             }
         </style>
     </head>
-    <h1> Conduction of Heat </h1>
-    <h2> The Problem </h2>
-    <p>
-        In this article we will try to simulate the conduction of heat 
-        across a square material plate and visualize the temperature of 
-        the material at various points in time.
-    </p>
+    <body>
+        <h1> Conduction of Heat </h1>
+        <h2> The Problem </h2>
+        <p>
+            In this article we will try to simulate the conduction of heat 
+            across a square material plate and visualize the temperature of 
+            the material at various points in time.
+        </p>
 
-    <h2> The Physics of it: The Heat Equation </h2>
-    <p>
-        From a basic standpoint, the flow of heat is proportional to the difference of temperature
-        across a material. That is to say, when two thin slices of a material are in close contact,
-        the higher the difference in temperature, the more heat flows between them. This idea is simply 
-        expressed in by a vector equation as follows, where \( \vec{h} \) indicates vector of flow of heat,
-        \( \nabla \) stands for the  
-        <a href="https://en.wikipedia.org/wiki/Gradient" target="_blank" rel="noopener noreferrer">gradient</a>
-        and \( T \) stands for the temperature.
-        $$ \vec{h}  = -k \nabla  T  $$
+        <h2> The Physics of it: The Heat Equation </h2>
+        <p>
+            From a basic standpoint, the flow of heat is proportional to the difference of temperature
+            across a material. That is to say, when two thin slices of a material are in close contact,
+            the higher the difference in temperature, the more heat flows between them. This idea is simply 
+            expressed in by a vector equation as follows, where \( \vec{h} \) indicates vector of flow of heat,
+            \( \nabla \) stands for the  
+            <a href="https://en.wikipedia.org/wiki/Gradient" target="_blank" rel="noopener noreferrer">gradient</a>
+            and \( T \) stands for the temperature.
+            $$ \vec{h}  = -k \nabla  T  $$
 
-        The quantity \( k \) is called the Thermal Conductivity of the material in question. It measures 
-        the amount of heat through by a unit length material when the temperature difference is also one unit.
-        This can be realised if we use the above equation in one dimension then 
-        \( h = -k \frac{\Delta T}{\Delta x} \). Substituting \( \frac{\Delta T}{\Delta x} = 1 
-        \implies h = -k \). The minus sign indicates that the heat flow is towards the lesser temperature.
-        The vector \( \vec{h} \) indicates the flow of heat, that is the rate of heat that flows across a 
-        slice of material per unit time. If some amount of heat is abosrbed by the material,
-        then it's temperature increases by a proportional amount. This can be represented by a similar linear 
-        equation relating the 
-        <a href="https://en.wikipedia.org/wiki/Divergence" target="_blank" rel="noopener noreferrer">divergence</a> 
-        of heat flow to the rate of change of temperature.
+            The quantity \( k \) is called the Thermal Conductivity of the material in question. It measures 
+            the amount of heat through by a unit length material when the temperature difference is also one unit.
+            This can be realised if we use the above equation in one dimension then 
+            \( h = -k \frac{\Delta T}{\Delta x} \). Substituting \( \frac{\Delta T}{\Delta x} = 1 
+            \implies h = -k \). The minus sign indicates that the heat flow is towards the lesser temperature.
+            The vector \( \vec{h} \) indicates the flow of heat, that is the rate of heat that flows across a 
+            slice of material per unit time. If some amount of heat is abosrbed by the material,
+            then it's temperature increases by a proportional amount. This can be represented by a similar linear 
+            equation relating the 
+            <a href="https://en.wikipedia.org/wiki/Divergence" target="_blank" rel="noopener noreferrer">divergence</a> 
+            of heat flow to the rate of change of temperature.
 
-        $$ \nabla \cdot \vec{h}  = - C \frac{\partial T} {\partial t}  $$
+            $$ \nabla \cdot \vec{h}  = - C \frac{\partial T} {\partial t}  $$
 
-        Here \( C \) is a material dependent quantity called as the Heat Capacity. But without making things 
-        too complex, we will assume both \( C \) and \( k \) to be relatively constant during this simulation,
-        since we are more interested in seeing the tempaerature of the material change.
-        
-        $$ \begin{align*} 
-            \nabla \cdot ( \vec{h} ) &= \nabla \cdot ( -k \nabla  T ) \\
-            \implies \nabla \cdot \vec{h} &= -k \nabla \cdot ( \nabla  T ) \\
-            \implies \nabla \cdot \vec{h} &= -k \nabla^2 T \\
-            \implies - C \frac{\partial T} {\partial t} &= -k \nabla^2 T \\
-            \implies \frac{\partial T} {\partial t} &= \frac{k}{C} \nabla^2 T \\
-            \end{align*} 
-        $$
-
-        This is the equation for temperature that we will use. It relates the space derivates of 
-        temperature to it's time derivate. That is, knowing the temerature in the whole of space 
-        (in our case, x & y directions) allows us to calculate its space derivative, filling in 
-        the right hand side of the above equation, giving us the change of temperature in a unit 
-        time. So knowing the temperature at all the points in space allows us to calculate
-        what it will be at a later point in time. 
-    </p>
-
-    <h2> The Maths of it: Numerically solving the system </h2>
-    <p>
-        The first step is to create a three dimensional system, two dimensions of space with one time. This is our
-        temperature field \( T(t, x, y) \). We calculate the derivatives as follows:
-        $$ \frac{ \partial T(t, x, y)} {\partial t} \approx \frac{ T(t + \Delta t, x, y) - T(t, x, y) } { \Delta t } $$
-        $$ \nabla T \approx ( 
-            \frac{ T(t, x + \Delta x, y) - T(t, x, y) } { \Delta x }, 
-            \frac{ T(t, x, y + \Delta y) - T(t, x, y) } { \Delta y }
-        ) $$
-        $$ \nabla^2 T \approx 
-            \frac{ T(t, x + 2\Delta x, y) + T(t, x, y) - 2T(t, x + \Delta x, y) } { (\Delta x)^2 } +
-            \frac{ T(t, x, y + 2\Delta y) + T(t, x, y) - 2T(t, x, y + \Delta y) } { (\Delta y)^2 }
-        $$
-
-        $$ x \rightarrow x - \Delta x; y \rightarrow y - \Delta y; $$
-        $$ \implies \nabla^2 T \approx 
-            \frac{ T(t, x + \Delta x, y) + T(t, x - \Delta x, y) - 2T(t, x, y) } { (\Delta x)^2 } +
-            \frac{ T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 2T(t, x, y) } { (\Delta y)^2 }
-        $$
-
-        $$ \frac{\partial T} {\partial t} = \frac{k}{C} \nabla^2 T  $$
-
-        $$ \frac{ T(t + \Delta t, x, y) - T(t, x, y) } { \Delta t } = \frac{k}{C} (
-            \frac{ T(t, x + \Delta x, y) + T(t, x - \Delta x, y) - 2T(t, x, y) } { (\Delta x)^2 } +
-            \frac{ T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 2T(t, x, y) } { (\Delta y)^2 } )
-        $$
-
-        Here we have used the symmetric definition of the 2nd derivative, since it will be easier to code later.
-        Here we now use two tricks to simplify, we substitute \( \Delta t = 1 \) and \( \Delta x = \Delta y = 1 \). 
-        We also define \( \frac{k}{C} = \alpha \).
-        The reason we are able to do this is hidden in the behaviour of error of our numerical solution, 
-        which we will discuss very soon.
-        Rearranging the terms in this equation we get our final expression:
-        $$  T(t + \Delta t, x, y)  = T(t, x, y) + \alpha (
-             T(t, x + \Delta x, y) + T(t, x - \Delta x, y)   +
-             T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 4T(t, x, y)  )
-        $$
-        
-        This is the numerical solution to our system. Here we have exactly one parameter \( \alpha \), which is 
-        constrained by the relation \( \alpha \leq \frac{1}{4} \). To understand why this is the case, 
-        we have to look at the stability of our numerical simulation. A similar analysis for one space 
-        dimension is done 
-        <a href="https://en.wikipedia.org/wiki/Von_Neumann_stability_analysis" target="_blank" 
-            rel="noopener noreferrer"> here</a>.
-        By applying a similar technique of Von Neumann stability analysis, we obtain the relation 
-        \( \alpha \leq \frac{1}{4} \).
-    </p>
-
-    <h2> The Programming of it: Discretizing the system </h2>
-
-    <p>
-        Now let us use Python with Numpy and MatPlotLib to visualize our efforts. 
-        First we declare our temperature field, the playground where the magic will happen
-        as a three dimensional array:
-        \( T(t, x, y) \equiv T[time, i, j] \)
-        
-        We arbitrarily choose the size of our square to be \( 50 \times 50 \) units, and 
-        choose simulate the whole thing for 1000 units of time.
-
-        <code>
-
-            import numpy as np
-            import matplotlib.pyplot as plt
-            import matplotlib.animation as animation
+            Here \( C \) is a material dependent quantity called as the Heat Capacity. But without making things 
+            too complex, we will assume both \( C \) and \( k \) to be relatively constant during this simulation,
+            since we are more interested in seeing the tempaerature of the material change.
             
-            alpha = 0.2499 
-            resolution_x, resolution_y = 50, 50 
-            max_time = 1000
-            T = np.zeros((max_time + 1, resolution_x, resolution_y))
-        </code>
-    </p>
-    <p>
-        We have to add 1 to the first index because we will need it for the last time unit of the simulation. 
-        Next we declare a function for setting the boundary conditions. The first part is setting two sides 
-        to a high temperature of 100. This side has \( x = 0 \) and for all \( y, time \) values. The second line
-        has the bottom side, for which \( y = 0 \) and for all \( x, time \) values. The last line sets a third 
-        side of the square with \( y = maxY \) to a low temperature of 0. We need this temperature difference 
-        for the simulation.
+            $$ \begin{align*} 
+                \nabla \cdot ( \vec{h} ) &= \nabla \cdot ( -k \nabla  T ) \\
+                \implies \nabla \cdot \vec{h} &= -k \nabla \cdot ( \nabla  T ) \\
+                \implies \nabla \cdot \vec{h} &= -k \nabla^2 T \\
+                \implies - C \frac{\partial T} {\partial t} &= -k \nabla^2 T \\
+                \implies \frac{\partial T} {\partial t} &= \frac{k}{C} \nabla^2 T \\
+                \end{align*} 
+            $$
 
-        <code>
+            This is the equation for temperature that we will use. It relates the space derivates of 
+            temperature to it's time derivate. That is, knowing the temerature in the whole of space 
+            (in our case, x & y directions) allows us to calculate its space derivative, filling in 
+            the right hand side of the above equation, giving us the change of temperature in a unit 
+            time. So knowing the temperature at all the points in space allows us to calculate
+            what it will be at a later point in time. 
+        </p>
 
-            def apply_boundary_conditions(maxX, maxY):
-                global T
-                T[:, 0, :] = 100.0
-                T[:, :, 0] = 100.0
-                T[:, :, maxY] = 0.0        
-        </code>
-    </p>
-    <p>
-        Next we declare a function to take the \( T \) field at time index and calculate it for the next time
-        step using our solution:
-        <code>
+        <h2> The Maths of it: Numerically solving the system </h2>
+        <p>
+            The first step is to create a three dimensional system, two dimensions of space with one time. This is our
+            temperature field \( T(t, x, y) \). We calculate the derivatives as follows:
+            $$ \frac{ \partial T(t, x, y)} {\partial t} \approx \frac{ T(t + \Delta t, x, y) - T(t, x, y) } { \Delta t } $$
+            $$ \nabla T \approx ( 
+                \frac{ T(t, x + \Delta x, y) - T(t, x, y) } { \Delta x }, 
+                \frac{ T(t, x, y + \Delta y) - T(t, x, y) } { \Delta y }
+            ) $$
+            $$ \nabla^2 T \approx 
+                \frac{ T(t, x + 2\Delta x, y) + T(t, x, y) - 2T(t, x + \Delta x, y) } { (\Delta x)^2 } +
+                \frac{ T(t, x, y + 2\Delta y) + T(t, x, y) - 2T(t, x, y + \Delta y) } { (\Delta y)^2 }
+            $$
 
-            def iterate(time):
-                global T, alpha
+            $$ x \rightarrow x - \Delta x; y \rightarrow y - \Delta y; $$
+            $$ \implies \nabla^2 T \approx 
+                \frac{ T(t, x + \Delta x, y) + T(t, x - \Delta x, y) - 2T(t, x, y) } { (\Delta x)^2 } +
+                \frac{ T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 2T(t, x, y) } { (\Delta y)^2 }
+            $$
 
-                for i in range(1, resolution_x-1):
-                    for j in range(1, resolution_y-1):
-                        T_txy = T[time][i][j]
-                        T_x_sum = T[time][i+1][j] + T[time][i-1][j]
-                        T_y_sum = T[time][i][j+1] + T[time][i][j-1]
-                        T[time+1][i][j] = T_txy + alpha * ( T_x_sum - 4*T_txy + T_y_sum )
+            $$ \frac{\partial T} {\partial t} = \frac{k}{C} \nabla^2 T  $$
 
-                return T[time + 1]
-        </code>
-    </p>
-    <p>
-        Next we write a function to draw our plot for \(i\)th step:
-        <code>
+            $$ \frac{ T(t + \Delta t, x, y) - T(t, x, y) } { \Delta t } = \frac{k}{C} (
+                \frac{ T(t, x + \Delta x, y) + T(t, x - \Delta x, y) - 2T(t, x, y) } { (\Delta x)^2 } +
+                \frac{ T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 2T(t, x, y) } { (\Delta y)^2 } )
+            $$
 
-            def animate(i):
-                global plot
-                result = iterate(i)
-                for c in plot.collections:
-                    c.remove()
+            Here we have used the symmetric definition of the 2nd derivative, since it will be easier to code later.
+            Here we now use two tricks to simplify, we substitute \( \Delta t = 1 \) and \( \Delta x = \Delta y = 1 \). 
+            We also define \( \frac{k}{C} = \alpha \).
+            The reason we are able to do this is hidden in the behaviour of error of our numerical solution, 
+            which we will discuss very soon.
+            Rearranging the terms in this equation we get our final expression:
+            $$  T(t + \Delta t, x, y)  = T(t, x, y) + \alpha (
+                T(t, x + \Delta x, y) + T(t, x - \Delta x, y)   +
+                T(t, x, y + \Delta y) + T(t, x, y - \Delta y) - 4T(t, x, y)  )
+            $$
             
-                plt.title("Frame = %i " % i)
-                plot = plt.contourf(result, 50)
-                return plot
-        </code>
-    </p>
+            This is the numerical solution to our system. Here we have exactly one parameter \( \alpha \), which is 
+            constrained by the relation \( \alpha \leq \frac{1}{4} \). To understand why this is the case, 
+            we have to look at the stability of our numerical simulation. A similar analysis for one space 
+            dimension is done 
+            <a href="https://en.wikipedia.org/wiki/Von_Neumann_stability_analysis" target="_blank" 
+                rel="noopener noreferrer"> here</a>.
+            By applying a similar technique of Von Neumann stability analysis, we obtain the relation 
+            \( \alpha \leq \frac{1}{4} \).
+        </p>
 
-    <p>
-        Finally, we set the boundary conditions, plot the temperature for \( time = 0 \) and 
-        call <code> animation.FuncAnimation </code> which will animate all the frames.
+        <h2> The Programming of it: Discretizing the system </h2>
 
-        <code>
+        <p>
+            Now let us use Python with Numpy and MatPlotLib to visualize our efforts. 
+            First we declare our temperature field, the playground where the magic will happen
+            as a three dimensional array:
+            \( T(t, x, y) \equiv T[time, i, j] \)
+            
+            We arbitrarily choose the size of our square to be \( 50 \times 50 \) units, and 
+            choose simulate the whole thing for 1000 units of time.
 
-            apply_boundary_conditions(resolution_x - 1, resolution_y - 1)
+            <code>
 
-            plt.style.use('classic')
-            fig = plt.figure()
-            plot = plt.contourf(T[0], 50)
-            plt.colorbar()
+                import numpy as np
+                import matplotlib.pyplot as plt
+                import matplotlib.animation as animation
+                
+                alpha = 0.2499 
+                resolution_x, resolution_y = 50, 50 
+                max_time = 1000
+                T = np.zeros((max_time + 1, resolution_x, resolution_y))
+            </code>
+        </p>
+        <p>
+            We have to add 1 to the first index because we will need it for the last time unit of the simulation. 
+            Next we declare a function for setting the boundary conditions. The first part is setting two sides 
+            to a high temperature of 100. This side has \( x = 0 \) and for all \( y, time \) values. The second line
+            has the bottom side, for which \( y = 0 \) and for all \( x, time \) values. The last line sets a third 
+            side of the square with \( y = maxY \) to a low temperature of 0. We need this temperature difference 
+            for the simulation.
 
-            anim = animation.FuncAnimation(fig, animate, frames=max_time, repeat=True)
+            <code>
 
-            plt.show()
-        </code>
-    </p>
+                def apply_boundary_conditions(maxX, maxY):
+                    global T
+                    T[:, 0, :] = 100.0
+                    T[:, :, 0] = 100.0
+                    T[:, :, maxY] = 0.0        
+            </code>
+        </p>
+        <p>
+            Next we declare a function to take the \( T \) field at time index and calculate it for the next time
+            step using our solution:
+            <code>
 
-    <p>
-        Here is the result: <br>
-        <video controls loop autoplay>
-            <source src="animation.mp4" type="video/mp4" />
-        </video>
-    </p>
+                def iterate(time):
+                    global T, alpha
 
+                    for i in range(1, resolution_x-1):
+                        for j in range(1, resolution_y-1):
+                            T_txy = T[time][i][j]
+                            T_x_sum = T[time][i+1][j] + T[time][i-1][j]
+                            T_y_sum = T[time][i][j+1] + T[time][i][j-1]
+                            T[time+1][i][j] = T_txy + alpha * ( T_x_sum - 4*T_txy + T_y_sum )
 
+                    return T[time + 1]
+            </code>
+        </p>
+        <p>
+            Next we write a function to draw our plot for \(i\)th step:
+            <code>
+
+                def animate(i):
+                    global plot
+                    result = iterate(i)
+                    for c in plot.collections:
+                        c.remove()
+                
+                    plt.title("Frame = %i " % i)
+                    plot = plt.contourf(result, 50)
+                    return plot
+            </code>
+        </p>
+
+        <p>
+            Finally, we set the boundary conditions, plot the temperature for \( time = 0 \) and 
+            call <code> animation.FuncAnimation </code> which will animate all the frames.
+
+            <code>
+
+                apply_boundary_conditions(resolution_x - 1, resolution_y - 1)
+
+                plt.style.use('classic')
+                fig = plt.figure()
+                plot = plt.contourf(T[0], 50)
+                plt.colorbar()
+
+                anim = animation.FuncAnimation(fig, animate, frames=max_time, repeat=True)
+
+                plt.show()
+            </code>
+        </p>
+
+        <p>
+            <a href="sim.py">Click here</a> for the full code. Here is the result: <br> <br>
+            <video controls loop autoplay width="100%">
+                <source src="animation.mp4" type="video/mp4" />
+            </video>
+        </p>
+
+    </body>
 </html>
