@@ -1,6 +1,5 @@
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    console.log("Yolo");
     const text = document.body.innerHTML;
     var converter = new showdown.Converter();
     let mdText = converter.makeHtml(text);
