@@ -1,3 +1,9 @@
+layout: page
+title: "EscalationIsADevil"
+permalink: /TheAgarwalBlog/articles/EscalationIsADevil
+
+
+
 # The search for Why being Good Matters
 
 Since a very young age I have often wondered about what being good really means.
