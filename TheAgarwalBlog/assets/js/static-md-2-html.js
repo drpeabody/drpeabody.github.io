@@ -1,5 +1,5 @@
 
-document.onload = () => {
+window.onload = () => {
     console.log("Yolo");
     const text = document.body.innerHTML;
     var converter = new showdown.Converter();
