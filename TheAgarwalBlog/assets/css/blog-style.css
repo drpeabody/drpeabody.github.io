@@ -10,6 +10,11 @@ body {
     /* text-decoration: none; */
     color: #007bff;
   }
+
+  h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+  }
   
   h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
@@ -22,15 +27,8 @@ body {
   
   /* Article styles */
   p {
-    max-width: 800px;
-    margin: 0 auto;
     padding: 20px;
     line-height: 1.5;
-  }
-  
-  h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
   }
   
   /* Blockquote styles */
@@ -57,7 +55,16 @@ body {
   }
 
   body {
-
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
+  }
+
+  body {
+    animation: color-change 8s infinite linear;
+  }
+  
+  @keyframes color-change {
+    0% { background-color: #eef; }
+    50% { background-color: #fffff3; }
+    100% { background-color: #eef; }
   }
