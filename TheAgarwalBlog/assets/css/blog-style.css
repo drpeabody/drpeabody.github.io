@@ -55,3 +55,9 @@ body {
   li {
     margin-bottom: 5px;
   }
+
+  body {
+
+    max-width: 800px;
+    margin: 0 auto;
+  }
