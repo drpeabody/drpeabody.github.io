@@ -1,0 +1,15 @@
+plugins:
+  - jekyll-relative-links
+theme: jekyll-theme-minimal
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - EscalationIsADevil.md
+  - README.md
+  - LICENSE.md
+  - COPYING.md
+  - CODE_OF_CONDUCT.md
+  - CONTRIBUTING.md
+  - ISSUE_TEMPLATE.md
+  - PULL_REQUEST_TEMPLATE.md
