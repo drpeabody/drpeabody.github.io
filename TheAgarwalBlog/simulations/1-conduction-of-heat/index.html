@@ -122,8 +122,7 @@
             We arbitrarily choose the size of our square to be \( 50 \times 50 \) units, and 
             choose simulate the whole thing for 1000 units of time.
 
-            <code>
-
+            <code><pre>
                 import numpy as np
                 import matplotlib.pyplot as plt
                 import matplotlib.animation as animation
@@ -132,7 +131,7 @@
                 resolution_x, resolution_y = 50, 50 
                 max_time = 1000
                 T = np.zeros((max_time + 1, resolution_x, resolution_y))
-            </code>
+            </pre></code>
         </p>
         <p>
             We have to add 1 to the first index because we will need it for the last time unit of the simulation. 
@@ -142,20 +141,18 @@
             side of the square with \( y = maxY \) to a low temperature of 0. We need this temperature difference 
             for the simulation.
 
-            <code>
-
+            <code><pre>
                 def apply_boundary_conditions(maxX, maxY):
                     global T
                     T[:, 0, :] = 100.0
                     T[:, :, 0] = 100.0
                     T[:, :, maxY] = 0.0        
-            </code>
+            </pre></code>
         </p>
         <p>
             Next we declare a function to take the \( T \) field at time index and calculate it for the next time
             step using our solution:
-            <code>
-
+            <code><pre>
                 def iterate(time):
                     global T, alpha
 
@@ -167,12 +164,11 @@
                             T[time+1][i][j] = T_txy + alpha * ( T_x_sum - 4*T_txy + T_y_sum )
 
                     return T[time + 1]
-            </code>
+            </pre></code>
         </p>
         <p>
             Next we write a function to draw our plot for \(i\)th step:
-            <code>
-
+            <code><pre>
                 def animate(i):
                     global plot
                     result = iterate(i)
@@ -182,15 +178,14 @@
                     plt.title("Frame = %i " % i)
                     plot = plt.contourf(result, 50)
                     return plot
-            </code>
+            </pre></code>
         </p>
 
         <p>
             Finally, we set the boundary conditions, plot the temperature for \( time = 0 \) and 
             call <code> animation.FuncAnimation </code> which will animate all the frames.
 
-            <code>
-
+            <code><pre>
                 apply_boundary_conditions(resolution_x - 1, resolution_y - 1)
 
                 plt.style.use('classic')
@@ -201,7 +196,7 @@
                 anim = animation.FuncAnimation(fig, animate, frames=max_time, repeat=True)
 
                 plt.show()
-            </code>
+            </pre></code>
         </p>
 
         <p>
