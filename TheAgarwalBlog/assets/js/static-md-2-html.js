@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
      * 
      * This will load the option "tables" and set its value to true for the ShowDown Engine          
     */ 
-    if(typeof maybeObject != "undefined" && markDownOptions) {
+    if(typeof markDownOptions != "undefined") {
         for(option in markDownOptions) {
             converter.setOption(option, markDownOptions[option]);
         }
