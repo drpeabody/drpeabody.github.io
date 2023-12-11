@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet"> 
+	<title> JSCii Cam</title>
+</head>
+<body>
+	<video style="display: none;"> Some Video </video>
+	<canvas id="canvas" style="max-height: 100vh; max-width: 100vw;"></canvas>
+</body>
+
+<script type="text/javascript">
+	// Prefer camera resolution nearest to 1280x720.
+	var width = window.screen.width, height = window.screen.height;
+	var constraints = { audio: false, video: { width: width, height: height }};
+	var video = document.querySelector('video');
+
+	const bg_color = "#000", fg_color = "#0f0";
+
+	navigator.mediaDevices.getUserMedia(constraints)
+	.then((mediaStream) => {
+		console.log(`Initializing Stream: ${width}x${height}`)
+        video.setAttribute('width', width);
+        video.setAttribute('height', height);
+		video.srcObject = mediaStream;
+		video.play();
+		draw();
+	})
+	.catch((err) => { console.log(err.name + ": " + err.message); }); 
+
+	var canvas = document.getElementById("canvas");
+
+	canvas.width = width;
+	canvas.height = height;
+
+	var context = canvas.getContext('2d');
+
+	var sat = " .,:~=uw#", len = sat.length - 1;
+	var numY = 100, numX = (numY * 1.0 * width / height);
+	var pixPerCellX = Math.ceil(width / numX);
+	var pixPerCellY = Math.ceil(height / numY);
+	context.font = "20px Roboto Mono";
+	// context.transform(pixPerCellX / pixPerCellY, 0, 0, 1, 0, 0);
+
+	draw = () => {
+
+		// var prev = context.getImageData(0, 0, width, height);
+		context.drawImage(video, 0, 0, width, height);
+		var img = context.getImageData(0, 0, width, height);
+		// context.putImageData(img, 0, 0);
+
+		var backup = img.data.slice();
+
+		context.fillStyle = bg_color;
+		context.fillRect(0, 0, width, height);
+		context.fillStyle = fg_color;
+
+		var t = Array(numX);
+		for(var y = 0; y < img.height; y += pixPerCellY){
+			for(var x = 0; x < img.width; x += pixPerCellX){
+
+				var pix = 4*(y * img.width + x);
+				var idx = len - (backup[pix]+backup[pix+1]+backup[pix+2]) * len / 255 / 3;
+				t[Math.floor(x / pixPerCellX)] = sat.charAt(idx);
+				// context.fillText(sat.charAt(idx), x, y);
+
+			}
+			context.fillText(t.join(''), 0, y);
+		}
+
+		requestAnimationFrame(draw);
+	}
+
+	console.log("Fix Permission when serving through html");
+
+</script>
+
+</html>
