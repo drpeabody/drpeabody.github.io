@@ -4,49 +4,72 @@
 	<meta charset="utf-8">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet"> 
 	<title> JSCii Cam</title>
+	<style >
+		#fg-color-picker {
+			position: fixed;
+			top: 0;
+			margin-top: 15px;
+			margin-left: 15px;
+			margin-right: 10px;
+			z-index: 10;
+		}
+		#bg-color-picker {
+			position: fixed;
+			top: 0;
+			margin-top: 65px;
+			margin-left: 15px;
+			margin-right: 10px;
+			z-index: 10;
+		}
+	</style>
 </head>
-<body>
-	<video style="display: none;"> Some Video </video>
-	<canvas id="canvas" style="max-height: 100vh; max-width: 100vw;"></canvas>
+<body style="margin: 0;">
+	<video style="display: none; "> Some Video </video>
+	<canvas id="canvas" style="margin: 0;transform: scaleX(-1);"></canvas>
+	<input type="color" id="fg-color-picker" name="Foreground"/>
+	<input type="color" id="bg-color-picker" name="Background"/>
 </body>
 
 <script type="text/javascript">
 	// Prefer camera resolution nearest to 1280x720.
-	var width = window.screen.width, height = window.screen.height;
-	var constraints = { audio: false, video: { width: width, height: height }};
-	var video = document.querySelector('video');
+	var width = window.innerWidth, height = window.innerHeight;
+	var constraints = { 
+		audio: false, 
+		video: { 
+			width: width, 
+			height: height 
+		}
+	};
 
-	const bg_color = "#000", fg_color = "#0f0";
-
-	navigator.mediaDevices.getUserMedia(constraints)
-	.then((mediaStream) => {
-		console.log(`Initializing Stream: ${width}x${height}`)
-        video.setAttribute('width', width);
-        video.setAttribute('height', height);
-		video.srcObject = mediaStream;
-		video.play();
-		draw();
-	})
-	.catch((err) => { console.log(err.name + ": " + err.message); }); 
+	var bg_color = "#000000", fg_color = "#00ff00";
+	document.getElementById("fg-color-picker").value = fg_color;
+	document.getElementById("fg-color-picker").addEventListener("input", () => {
+		fg_color = document.getElementById("fg-color-picker").value;
+	});
+	document.getElementById("bg-color-picker").value = bg_color;
+	document.getElementById("bg-color-picker").addEventListener("input", () => {
+		bg_color = document.getElementById("bg-color-picker").value;
+	});
+	const videoElementTag = document.querySelector('video');
 
 	var canvas = document.getElementById("canvas");
-
 	canvas.width = width;
 	canvas.height = height;
 
 	var context = canvas.getContext('2d');
+	context.font = "10px Roboto Mono";
 
-	var sat = " .,:~=uw#", len = sat.length - 1;
-	var numY = 100, numX = (numY * 1.0 * width / height);
+	var sat = " .,:~=uw#", len = sat.length;
+	var numY = 100, numX = Math.round(numY * 1.0 * width / height);
 	var pixPerCellX = Math.ceil(width / numX);
 	var pixPerCellY = Math.ceil(height / numY);
-	context.font = "20px Roboto Mono";
 	// context.transform(pixPerCellX / pixPerCellY, 0, 0, 1, 0, 0);
+
 
 	draw = () => {
 
 		// var prev = context.getImageData(0, 0, width, height);
-		context.drawImage(video, 0, 0, width, height);
+		context.drawImage(videoElementTag, 0, 0, width, height);
 		var img = context.getImageData(0, 0, width, height);
 		// context.putImageData(img, 0, 0);
 
@@ -57,14 +80,15 @@
 		context.fillStyle = fg_color;
 
 		var t = Array(numX);
+
 		for(var y = 0; y < img.height; y += pixPerCellY){
 			for(var x = 0; x < img.width; x += pixPerCellX){
 
 				var pix = 4*(y * img.width + x);
-				var idx = len - (backup[pix]+backup[pix+1]+backup[pix+2]) * len / 255 / 3;
+				let avg_color = (backup[pix]+backup[pix+1]+backup[pix+2]) / 3.0;
+				let avg_normalized_color = avg_color / 256;
+				var idx = avg_normalized_color * len;
 				t[Math.floor(x / pixPerCellX)] = sat.charAt(idx);
-				// context.fillText(sat.charAt(idx), x, y);
-
 			}
 			context.fillText(t.join(''), 0, y);
 		}
@@ -72,7 +96,20 @@
 		requestAnimationFrame(draw);
 	}
 
-	console.log("Fix Permission when serving through html");
+	navigator.mediaDevices.getUserMedia(constraints)
+	.then((mediaStream) => {
+		console.log(`Initializing Stream: ${width}x${height}`);
+        videoElementTag.setAttribute('width', width);
+        videoElementTag.setAttribute('height', height);
+		videoElementTag.srcObject = mediaStream;
+		videoElementTag.play();
+		draw();
+	})
+	.catch((err) => { 
+		console.log(err.name + ": " + err.message); 
+		console.log(err);
+	}); 
+
 
 </script>
 
