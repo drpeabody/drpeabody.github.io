@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js" 
+        integrity="sha512-LhccdVNGe2QMEfI3x4DVV3ckMRe36TfydKss6mJpdHjNFiV07dFpS2xzeZedptKZrwxfICJpez09iNioiSZ3hA==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer">
+    </script>
+    <script src="../../assets/js/static-md-2-html.js" 
+        crossorigin="anonymous"
+     ></script> 
+     
+    <link href="../../assets/css/blog-style.css" rel="stylesheet">
+    <title>MRisk Game Rules </title>
+</head>
+
+# MRisk Game Rules
+
+
+MRisk is a risk inspired game made only on HTML and JS. It runs in your web browser and does not need to install anything.  
+A game of Risk involves territories captured by players, investing into the territories and capturing enemy territories.  
+Each player has capital territories, which when captured by another player, automatically eliminates the player whose capital is captured.  
+
+## Starting the Game
+
+The game starts with only two Players: Red, and Green.  
+There is a map serving as a board on which these two players will play the game.  
+On the Map there are several territories, some in dark grey and some in light grey.
+
+### Choosing Capital cities
+
+The first step for each player is to select two capital territories each.  
+This happens alternatively, starting with Red.  
+Out of all the territories, the game randomly selects 10 territories, highlights them in light grey color.  
+Red can choose any one of these light grey territories to be their capital.  
+A capital city is denoted by a bright boundary around the territory with their color.  
+![Capital](assets/capital.png =180x120)
+
+### Initial Territorial Assignment
+
+After the Red and Green players have each chosen two capital territories each, the game will automatically calculate the remaining 
+unassigned (grey) territories, shuffle them in a random order and assign half of them to Green and the other half to Red.  
+This means out of the 40 total territories, 4 being chosen as capitals, the remaining 36 get divided evenly 
+between Red and Green, both of them getting 18 territories each always.
+
+### State of the game at the beginning
+
+After the capital cities are selected, each player starts with 24 units of gold.
+The HUD on the right completes itself:
+1. Color reflects the current player, Red or Green
+2. Gold Pile Number reflects the current gold pile, which can be used to add armies to a player's territories
+3. Capital Cities' names of the current player
+4. Total Number of zones owned by the player currently
+5. Reminder of the cost of armies when adding armies to a player's territories
+
+![Capital](assets/game-start.png =600x300)
+
+
+## Playing the Game
+
+After the capital cities are selected, the player gets 3 actions, the main gameplay loop:
+
+### Action 1: Add Armies
+
+Players can choose to add armies to their territories by pressing the "Add" button at the bottom of the HUD.  
+Armies are of three kinds: Infantry, Cavalry and Artillery.  
+Players can choose any amount of armies to add into any owned territories.
+To add armies, press the yellow "Add" button on the bottom of the HUD, then select which kind of army you wish you add,
+then select which territory you want to add the armies to. The territory you select has to be owned by you, meaning, Red
+can only add armies to Red territories and vice versa.  
+![Capital](assets/adding-armies.png =650x100)  
+When you add armies, the corresponding price is calculated and deducted from your gold pile.  
+A player can choose to add as many armies as many times as they can afford every turn.
+
+
+### Action 2: Attack Territories
+
+Players can choose to attack any enemy territory initiating an attack from one of the neighbour territories that they own.
