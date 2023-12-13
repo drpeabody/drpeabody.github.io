@@ -10,11 +10,26 @@
 		text-align: center;
 		overflow: hidden;
 	}
+	#rules-btn {
+		position: fixed;
+		top: 90%;
+		left: 82.5%;
+		z-index: 10;
+	}
+	p {
+		position: fixed;
+		top: 83%;
+		left: 82.5%;
+		z-index: 10;
+		color: #eee;
+		text-align: left;
+	}
 </style>
 <body oncontextmenu="return false">
-
 	<canvas id="canvas"></canvas>
-
+	<p>Left Click to Interact</p>
+	<p style="margin-top: 2%;">Hold & Drag Right Click to move the map</p>
+	<a href="mrisk-rules.html"><input type="button" id="rules-btn" value="Rules" /></a>
 </body>
 
 <script type="text/javascript" src="util.js"></script>
@@ -186,9 +201,9 @@
 
 		showAddButtons: () => {
 			HUD.buttons = HUD.buttons.concat([
-				new Button("Infantry", width * 0.55, height * 0.87, width*0.075, height*0.1),
-				new Button("Cavalry", width * 0.65, height * 0.87, width*0.075, height*0.1),
-				new Button("Artillery", width * 0.75, height * 0.87, width*0.075, height*0.1),
+				new Button("Infantry", width * 0.50, height * 0.87, width*0.075, height*0.1),
+				new Button("Cavalry", width * 0.60, height * 0.87, width*0.075, height*0.1),
+				new Button("Artillery", width * 0.70, height * 0.87, width*0.075, height*0.1),
 			]);
 		},
 		hideAddButtons: () => {
@@ -248,6 +263,7 @@
 				HUD.label = 'Choose Infantry, Cavalry, or Artillery. Click anywhere else to cancel.';
 				pressButton((b) => {
 					if(!b || (b.name !== 'Infantry' && b.name !== 'Cavalry' && b.name !== 'Artillery')) {
+								HUD.label = 'You have selected to cancel adding.';
 						HUD.hideAddButtons();
 						pressButton(btnCall); // Let player choose another action
 						return;
