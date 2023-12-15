@@ -35,5 +35,8 @@ class Zone {
 			let armyRect = ctx.measureText(armyString);
 			ctx.fillText(this.name, this.x + (w - nameRect.width)/2, this.y + h/2);
 			ctx.fillText(armyString, this.x + (w - armyRect.width)/2, this.y + h/2 + fs); 	
-		}	
+		}
+		totalNumerOfMilitaryUnits() {
+			return this.Artillery + this.Cavalry + this.Infantry;
+		}
 	}
