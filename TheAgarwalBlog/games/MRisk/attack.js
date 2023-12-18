@@ -1,84 +1,90 @@
 
+const Artillery = "Artillery";
+const Cavalry = "Cavalry";
+const Infantry = "Infantry";
 
-// 1 Cavalry kills and dies to 2 Infantry
-const InfantryKilledByCavalry = 2;
-// 1 Artillery kills and dies to 3 Infantry
-const InfantryKilledByArtillery = 3;
-// 1 Artillery kills and dies to 2 Cavalry
-const CavalryKilledByArtillery = 2;
+COST_TROOP = {
+	'Infantry': 1, 'Cavalry': 3, 'Artillery': 5
+};
 
-class BattleResult {
-	constructor(successFlag, attackUnitsLeft, victimUnitsLeft) {
-		assert(typeof successFlag, "boolean", "Battle success flag should be boolean");
-		assert(typeof attackUnitsLeft === 'number' && !isNaN(attackUnitsLeft), true, "Number of attacks unit left should be a number");
-		assert(typeof victimUnitsLeft === 'number' && !isNaN(victimUnitsLeft), true, "Number of victim unit left should be a number");
-		this.successFlag = successFlag;
-		this.attackUnitsLeft = attackUnitsLeft;
-		this.victimUnitsLeft = victimUnitsLeft;
+// attackStrengthMatrix[type1][type2] = 
+// The number of units of type2 that 1 unit of type 1 can kill
+// Currently it is a symmetric matrix
+
+const artilleryKillsCavalry = 2.0;
+const artilleryKillsInfantry = 3.0;
+const cavalryKillsInfantry = 2.0;
+const attackStrengthMatrix = {
+	Artillery: {
+		Artillery: 1.0, 						  Cavalry: artilleryKillsCavalry,       Infantry: artilleryKillsInfantry
+	},
+	Cavalry: {
+		Artillery: 1.0001/artilleryKillsCavalry,  Cavalry: 1.0,                         Infantry: cavalryKillsInfantry
+	},
+	Infantry: {
+		Artillery: 1.0001/artilleryKillsInfantry, Cavalry: 1.0001/cavalryKillsInfantry, Infantry: 1.0
 	}
 }
 
-class BattleTripleResult {
-	constructor(successFlag, attackUnitsLeft, victimInfantryLeft, victimCavalryLeft, victimArtilleryLeft) {
-		assert(typeof successFlag, "boolean", "BattleTriple success flag should be boolean");
-		assert(typeof attackUnitsLeft === 'number' && !isNaN(attackUnitsLeft), true, "Number of attacks unit left should be a number");
-		assert(typeof victimInfantryLeft === 'number' && !isNaN(victimInfantryLeft), true, "Number of victim infantry left should be a number");
-		assert(typeof victimCavalryLeft === 'number' && !isNaN(victimCavalryLeft), true, "Number of victim cavalry left should be a number");
-		assert(typeof victimArtilleryLeft === 'number' && !isNaN(victimArtilleryLeft), true, "Number of victim artillery left should be a number");
-		this.successFlag = successFlag;
-		this.attackUnitsLeft = attackUnitsLeft;
-		this.victimInfantryLeft = victimInfantryLeft;
-		this.victimCavalryLeft = victimCavalryLeft;
-		this.victimArtilleryLeft = victimArtilleryLeft;
-	}
-}
 
-// Returns the result of a battle between any two kinds of units
-// Attack strength is the number of attack_to units that are equal to attack_from units
-// For example, if 1 artillery can beat 3 infantry, this function can be called like this:
-// 		internal_do_attack_from(num_artillery, num_infantry, 3)
-// In this case artillery is the attacking unit and the result return will determine whether 
-// attacking units win or not
-internal_do_attack_from = (attack_from, attack_to, attack_strength) => {
+internal_do_attack = (attack_from_territory, attack_to_territory) => {
 
-	if(attack_from * attack_strength > attack_to) {
-		// attack is stronger
-		attack_from = attack_from - Math.ceil(attack_to / attack_strength);
-		attack_to = 0;
-		return new BattleResult(true, attack_from, 0);
+	const choices = ["Artillery", "Cavalry", "Infantry"];
 
-	} else if (attack_from * attack_strength === attack_to) {
-		// Draw
-		// Need 1 extra unit to occupy territory
-		return new BattleResult(false, 1, 1 * attack_strength);
-	} else {
-		return new BattleResult(false, 0, attack_to - (attack_from * attack_strength));
-	}
-}
+	for(attack_unit_choice of choices) {
+		for(defend_unit_choice of choices) {
 
-internal_do_attack_from_artillery = (attacking_artillery, victim_infantry, victim_cavalry, victim_artillery) => {
+			let attacking_units = attack_from_territory[attack_unit_choice];
+			let defending_units = attack_to_territory[defend_unit_choice];
 
+			if(attacking_units === 0) continue;
 
-	// Artillery attacks first, followed by Cavalry, followed by Infantry
-	if(attacking_artillery > 0) {
+			let defenseStrength = attackStrengthMatrix[defend_unit_choice][attack_unit_choice];
+			let attackStrength = attackStrengthMatrix[attack_unit_choice][defend_unit_choice];
+			let attackUnitsLeft = Math.max(0, attacking_units - (defending_units * defenseStrength));
+			let victimUnitsLeft = Math.max(0, defending_units - (attacking_units * attackStrength));
+			let attackResult = attackUnitsLeft > 0;
 
-		let result = internal_do_attack_from(attacking_artillery, victim_artillery, 1);
-		
-		if(result.successFlag) {
-			let result2 = internal_do_attack_from(result.attackUnitsLeft, victim_cavalry, CavalryKilledByArtillery);
+			// If attackStrengthMatrix[A][B] * attackStrengthMatrix[B][A] >= 1,
+			// one of the armies is guaranteed to die completely
+			// In our case the attackStrengthMatrix is deliberately defined to make this happen
+			// transposed elements  of this matrix multplied together will always >= 1
 			
-			if(result2.successFlag) {
-				let result3 = internal_do_attack_from(result2.attackUnitsLeft, victim_infantry, InfantryKilledByArtillery);
-
-				if(result3.successFlag) {
-					// Attack is overall success
-					return new BattleTripleResult(true, result3.attackUnitsLeft, 0, 0, 0);
-				}
+			if(attack_from_territory.totalNumerOfMilitaryUnits() > 1.0) {
+				// If this is not last bit of attack, modify the army counts
+				attack_from_territory[attack_unit_choice] = 
+					(attackUnitsLeft - Math.floor(attackUnitsLeft) > 0.4) 
+						? Math.ceil(attackUnitsLeft) 
+						: Math.floor(attackUnitsLeft);
+				attack_to_territory[defend_unit_choice] = 
+					(victimUnitsLeft - Math.floor(victimUnitsLeft) > 0.4) 
+						? Math.ceil(victimUnitsLeft) 
+						: Math.floor(victimUnitsLeft);victimUnitsLeft;
 			}
+
+			if(attackResult) {
+				// Defending army has become zero
+				// Continue to next defending choice of army
+				continue;
+			} else {
+				// attacking army has become zero
+				// Break to next attacking choice of army
+				break;
+			}
+			
 		}
 	}
 
+	let totalAttackingMilitaryLeft = attack_from_territory.totalNumerOfMilitaryUnits();
+	let totalDefendingMilitaryLeft = attack_to_territory.totalNumerOfMilitaryUnits();
 
+	if(totalAttackingMilitaryLeft > 1 && totalDefendingMilitaryLeft < 0.5) {
+		// Attack was success
+		return true;
+	} else {
+		// Attack was either failed, or not enough military was left to occupy both territories
+		return false;
+	}
 }
 
 
@@ -86,35 +92,61 @@ internal_do_attack_from_artillery = (attacking_artillery, victim_infantry, victi
 resolveAttack = (attacker, victim) => {
 
 	// Make calculations attack
-	const attacking_infantry = attacker.Infantry;
-	const attacking_cavalry = attacker.Cavalry;
-	const attacking_artillery = attacker.Artillery;
+	assert(attacker.Infantry >= 0, true, 'attacker.Infantry should be positive');
+	assert(attacker.Cavalry >= 0, true, 'attacker.Cavalry should be positive');
+	assert(attacker.Artillery >= 0, true, 'attacker.Artillery should be positive');
+	assert(victim.Infantry >= 0, true, 'victim.Infantry should be positive');
+	assert(victim.Cavalry >= 0, true, 'victim.Cavalry should be positive');
+	assert(victim.Artillery >= 0, true, 'victim.Artillery should be positive');
 
-	const victim_infantry = victim.Infantry;
-	const victim_cavalry = victim.Cavalry;
-	const victim_artillery = victim.Artillery;
-	
-	assert(attacking_infantry >= 0, true, 'attacking_infantry should be positive');
-	assert(attacking_cavalry >= 0, true, 'attacking_cavalry should be positive');
-	assert(attacking_artillery >= 0, true, 'attacking_artillery should be positive');
-	assert(victim_infantry >= 0, true, 'victim_infantry should be positive');
-	assert(victim_cavalry >= 0, true, 'victim_cavalry should be positive');
-	assert(victim_artillery >= 0, true, 'victim_artillery should be positive');
+	const attacking_gold = attacker.Infantry * COST_TROOP["Infantry"] 
+		+ attacker.Cavalry * COST_TROOP["Cavalry"]
+		+ attacker.Artillery * COST_TROOP["Artillery"];
 
-	const attacking_gold = attacking_infantry * COST_TROOP["Infantry"] 
-		+ attacking_cavalry * COST_TROOP["Cavalry"]
-		+ attacking_artillery * COST_TROOP["Artillery"];
-
-	const defending_gold = victim_infantry * COST_TROOP["Infantry"] 
-		+ victim_cavalry * COST_TROOP["Cavalry"]
-		+ victim_artillery * COST_TROOP["Artillery"];
+	const defending_gold = victim.Infantry * COST_TROOP["Infantry"] 
+		+ victim.Cavalry * COST_TROOP["Cavalry"]
+		+ victim.Artillery * COST_TROOP["Artillery"];
 
 	const defense_budget_difference = attacking_gold - defending_gold;
 
 	// Resolve Attack
+	let attackSuccessFlag = internal_do_attack(attacker, victim);
 
 	// Change Zone properties for victim and attacker
+	if(attackSuccessFlag) {
+		victim.master = attacker.master;
+		victim.master.numZonesOwned -= 1;
+		attacker.master.numZonesOwned += 1;
+		
+		// Weakest 1 unit stays behind, every other unit moves forward
+		if(attacker.Infantry >= 1) {
+			victim.Infantry = attacker.Infantry - 1;
+			victim.Cavalry = attacker.Cavalry;
+			victim.Artillery = attacker.Artillery;
+			attacker.Infantry = 1;
+			attacker.Cavalry = 0;
+			attacker.Artillery = 0;
+		} else if (attacker.Cavalry > 1) {
+			victim.Cavalry = attacker.Cavalry - 1;
+			victim.Artillery = attacker.Artillery;
+			attacker.Cavalry = 0;
+			attacker.Artillery = 0;
+		} else if (attacker.Artillery > 1) {
+			victim.Artillery = attacker.Artillery - 1;
+			attacker.Artillery = 0;
+		} else {
+			console.log(attacker);
+			console.log(victim);
+			throw Error();
+		}
 
+		// Add gold to winner's stock pile
+		attacker.master.gold += Math.max(1, defense_budget_difference);
+	
+	} else {
+		// Attack failed, nothing happened
+		return `Attack failed`
+	}
 
 
 	// Return Message

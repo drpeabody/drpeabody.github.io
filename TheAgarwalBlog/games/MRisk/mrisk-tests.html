@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"> 
+        <title>MRisk - Test Cases</title>
+        <script type="text/javascript" src="util.js"></script>
+        <script type="text/javascript" src="zone.js"> </script>
+        <script type="text/javascript" src="gamemap.js"> </script>
+        <script type="text/javascript" src="player.js"> </script>
+        <script type="text/javascript" src="button.js"> </script>
+        <script type="text/javascript" src="attack.js"> </script>
+    </head>
+    <style type="text/css">
+        .test-row {
+            color: #111;
+            width: 100%;
+            height: 5%;
+            background-color: #dd5;
+        }
+    </style>
+    <body></body>
+    <script type="text/javascript">
+
+        markTestSuccess = (testDOMElement) => {
+            testDOMElement.children[0].innerHTML = testDOMElement.id + 
+                " Passed.";
+            testDOMElement.style.background = "#7d7";
+        }
+
+        markTestError = (testDOMElement) => {
+            testDOMElement.children[0].innerHTML = testDOMElement.id + 
+                " Fatal.";
+            testDOMElement.style.background = "#e77";
+        }
+
+        markTestFailure = (testDOMElement) => {
+            testDOMElement.children[0].innerHTML = testDOMElement.id + 
+                " Failed.";
+            testDOMElement.style.background = "#ee7";
+        }
+
+        runAllTests = () => {
+            for(let test_key in allTests) {
+
+                // Initialize name of test
+                let testRow = document.createElement('div');
+                testRow.classList.add("test-row");
+                testRow.id = test_key;
+                let child = document.createElement('div');
+                child.innerHTML = test_key + " Running...";
+                testRow.appendChild(child);
+                document.body.appendChild(testRow);
+
+                let test_function = allTests[test_key];
+                let result = false;
+                let testHTMLDomElem = document.getElementById(test_key);
+                
+                try {
+                    result = test_function();
+                    if(!result) markTestFailure(testHTMLDomElem);
+                    else markTestSuccess(testHTMLDomElem);
+                } catch (error) {
+                    let stackElem = document.createElement("p");
+                    stackElem.innerHTML = error.stack.replaceAll("@", "<br>&nbsp;&nbsp;&nbsp;&nbsp;@");
+                    stackElem.style.display = 'none';
+                    let stackOpenButtonElem = document.createElement("button");
+                    stackOpenButtonElem.innerHTML = "Stack Trace";
+                    stackOpenButtonElem.display = 'flex-inline';
+                    stackOpenButtonElem.onclick = () => { 
+                        if(stackElem.style.display === 'none') stackElem.style.display = 'block'; 
+                        else stackElem.style.display = 'none'; 
+                    }
+                    testHTMLDomElem.appendChild(stackOpenButtonElem);
+                    testHTMLDomElem.appendChild(stackElem);
+
+                    markTestError(testHTMLDomElem);
+                }
+
+            }
+        } 
+    </script>
+    <script type="text/javascript">
+        const allTests = {
+            "util-test-1": () => { return false; },
+            "util-test-2": () => { return true; },
+            "util-test-3": () => { throw new Error("Test Error"); },
+            "attack.resolveAttackTest.001": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 1 || z2.Cavalry !== 0 || z2.Artillery !== 0)
+                    || (attackResult !== `Attack failed`)) {
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.002": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 5; z2.Infantry = 1;
+                z1.master = "well";
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 3 || z2.Cavalry !== 0 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.003": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 15; z2.Infantry = 1;
+                z1.master = "well";
+                z1.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 13 || z2.Cavalry !== 0 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.004": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 1; z1.Cavalry = 1; 
+                z2.Infantry = 1; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 1 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            }
+
+        };
+
+        runAllTests();
+    </script>
+</html>
