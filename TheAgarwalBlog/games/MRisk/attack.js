@@ -99,24 +99,18 @@ resolveAttack = (attacker, victim) => {
 	assert(victim.Cavalry >= 0, true, 'victim.Cavalry should be positive');
 	assert(victim.Artillery >= 0, true, 'victim.Artillery should be positive');
 
-	const attacking_gold = attacker.Infantry * COST_TROOP["Infantry"] 
-		+ attacker.Cavalry * COST_TROOP["Cavalry"]
-		+ attacker.Artillery * COST_TROOP["Artillery"];
-
 	const defending_gold = victim.Infantry * COST_TROOP["Infantry"] 
 		+ victim.Cavalry * COST_TROOP["Cavalry"]
 		+ victim.Artillery * COST_TROOP["Artillery"];
-
-	const defense_budget_difference = attacking_gold - defending_gold;
 
 	// Resolve Attack
 	let attackSuccessFlag = internal_do_attack(attacker, victim);
 
 	// Change Zone properties for victim and attacker
 	if(attackSuccessFlag) {
+		victim.master.changeNumZonesOwnedBy(- 1);
+		attacker.master.changeNumZonesOwnedBy(+ 1);
 		victim.master = attacker.master;
-		victim.master.numZonesOwned -= 1;
-		attacker.master.numZonesOwned += 1;
 		
 		// Weakest 1 unit stays behind, every other unit moves forward
 		if(attacker.Infantry >= 1) {
@@ -141,7 +135,7 @@ resolveAttack = (attacker, victim) => {
 		}
 
 		// Add gold to winner's stock pile
-		attacker.master.gold += Math.max(1, defense_budget_difference);
+		attacker.master.addGold( Math.max(1, Math.round(defending_gold/2.0)) );
 	
 	} else {
 		// Attack failed, nothing happened
@@ -150,6 +144,5 @@ resolveAttack = (attacker, victim) => {
 
 
 	// Return Message
-	return `${attacker.master.color} attacked from ${attacker.name} to ${victim.name} with army constitution ` +
-	`(${attacker.Infantry}, ${attacker.Cavalry}, ${attacker.Artillery})`;
+	return `Your Attack from ${attacker.name} to ${victim.name} with was a success!`;
 }
