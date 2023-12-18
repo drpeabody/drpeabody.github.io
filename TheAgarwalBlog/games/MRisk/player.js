@@ -60,4 +60,12 @@
 			ctx.fillText("Cost of Cavalry: 3", width * 0.825, height * 0.35);
 			ctx.fillText("Cost of Artillery: 5", width * 0.825, height * 0.4);
 		}
+
+		addGold(goldToBeAdded) {
+			this.gold = this.gold + goldToBeAdded;
+		}
+
+		changeNumZonesOwnedBy(numZonesDiffernce) {
+			this.numZonesOwned = this.numZonesOwned + numZonesDiffernce;
+		}
 	}
