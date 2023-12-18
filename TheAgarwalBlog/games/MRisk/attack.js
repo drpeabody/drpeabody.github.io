@@ -123,17 +123,17 @@ resolveAttack = (attacker, victim) => {
 			victim.Infantry = attacker.Infantry - 1;
 			victim.Cavalry = attacker.Cavalry;
 			victim.Artillery = attacker.Artillery;
-			attacker.Infantry = 1;
+			attacker.Infantry = attacker.Infantry - victim.Infantry;
 			attacker.Cavalry = 0;
 			attacker.Artillery = 0;
 		} else if (attacker.Cavalry > 1) {
 			victim.Cavalry = attacker.Cavalry - 1;
 			victim.Artillery = attacker.Artillery;
-			attacker.Cavalry = 0;
+			attacker.Cavalry = attacker.Cavalry - victim.Cavalry;
 			attacker.Artillery = 0;
 		} else if (attacker.Artillery > 1) {
 			victim.Artillery = attacker.Artillery - 1;
-			attacker.Artillery = 0;
+			attacker.Artillery = attacker.Artillery - victim.Artillery;
 		} else {
 			console.log(attacker);
 			console.log(victim);

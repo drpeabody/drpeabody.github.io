@@ -140,6 +140,127 @@
                     return false;
                 }
                 return true;
+            },
+            "attack.resolveAttackTest.005": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Cavalry = 2; 
+                z2.Infantry = 1; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 1 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 1 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.006": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Cavalry = 3; 
+                z2.Infantry = 2; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 1 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 1 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.007": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Cavalry = 30; 
+                z2.Cavalry = 2; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 1 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 27 || z2.Artillery !== 0)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            }
+
+            ,
+            "attack.resolveAttackTest.008": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 1; z1.Artillery = 1; 
+                z2.Infantry = 1; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 0 || z2.Artillery !== 1)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.009": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Artillery = 2; 
+                z2.Infantry = 1; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 0 || z1.Artillery !== 1)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 0 || z2.Artillery !== 1)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.010": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 1; z1.Artillery = 3; 
+                z2.Infantry = 2; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 1 || z1.Cavalry !== 0 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 0 || z2.Artillery !== 2)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
+            },
+            "attack.resolveAttackTest.011": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Cavalry = 2; z1.Artillery = 30; 
+                z2.Cavalry = 2; 
+                z1.master = "well";
+                z2.master = {name: "loser"};
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 1 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 1 || z2.Artillery !== 29)
+                    || (attackResult === `Attack failed`)
+                    || (z1.master !== z2.master)) {
+                        clog(z1, z2)
+                    return false;
+                }
+                return true;
             }
 
         };
