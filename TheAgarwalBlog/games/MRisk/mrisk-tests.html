@@ -261,6 +261,23 @@
                     return false;
                 }
                 return true;
+            },
+            "attack.resolveAttackTest.012": () => {
+                let z1 = new Zone("Troy", 0, 0, ["Rome"]);
+                let z2 = new Zone("Rome", 0, 0, ["Troy"]);
+                z1.Infantry = 0; z1.Cavalry = 2; z1.Artillery = 0; 
+                z2.Infantry = 0; z2.Cavalry = 1; 
+                z1.master = new Player("#f00", 2);
+                z2.master = new Player("#0f0", 2);
+                let attackResult = resolveAttack(z1, z2);
+                if((z1.Infantry !== 0 || z1.Cavalry !== 2 || z1.Artillery !== 0)
+                    || (z2.Infantry !== 0 || z2.Cavalry !== 1 || z2.Artillery !== 0)
+                    || (attackResult !== `Attack failed`)
+                    || (z1.master === z2.master)) {
+                        clog(z1, z2, attackResult)
+                    return false;
+                }
+                return true;
             }
 
         };
