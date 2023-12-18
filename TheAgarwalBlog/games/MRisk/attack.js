@@ -43,14 +43,21 @@ internal_do_attack = (attack_from_territory, attack_to_territory) => {
 			let attackStrength = attackStrengthMatrix[attack_unit_choice][defend_unit_choice];
 			let attackUnitsLeft = Math.max(0, attacking_units - (defending_units * defenseStrength));
 			let victimUnitsLeft = Math.max(0, defending_units - (attacking_units * attackStrength));
-			let attackResult = attackUnitsLeft > 0;
+			let attackResult = attackUnitsLeft > 1;
+
+			// Fractional case
+			if(0 <= attackUnitsLeft && attackUnitsLeft <= 1.0 
+				&& (attack_from_territory.totalNumerOfMilitaryUnits() - attacking_units) >= 1
+			) {
+				attackResult = true;
+			}
 
 			// If attackStrengthMatrix[A][B] * attackStrengthMatrix[B][A] >= 1,
 			// one of the armies is guaranteed to die completely
 			// In our case the attackStrengthMatrix is deliberately defined to make this happen
 			// transposed elements  of this matrix multplied together will always >= 1
 			
-			if(attack_from_territory.totalNumerOfMilitaryUnits() > 1.0) {
+			if(attackResult) {
 				// If this is not last bit of attack, modify the army counts
 				attack_from_territory[attack_unit_choice] = 
 					(attackUnitsLeft - Math.floor(attackUnitsLeft) > 0.4) 
@@ -60,9 +67,6 @@ internal_do_attack = (attack_from_territory, attack_to_territory) => {
 					(victimUnitsLeft - Math.floor(victimUnitsLeft) > 0.4) 
 						? Math.ceil(victimUnitsLeft) 
 						: Math.floor(victimUnitsLeft);victimUnitsLeft;
-			}
-
-			if(attackResult) {
 				// Defending army has become zero
 				// Continue to next defending choice of army
 				continue;
@@ -71,7 +75,6 @@ internal_do_attack = (attack_from_territory, attack_to_territory) => {
 				// Break to next attacking choice of army
 				break;
 			}
-			
 		}
 	}
 
