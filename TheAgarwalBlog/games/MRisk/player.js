@@ -4,7 +4,7 @@
 			assert(color, NotEmpty, 'Color Cannot be Empty');
 			assert(color.charAt(0), '#', 'Color must be a hex code');
 			final(this, 'color', color);
-			final(this, 'zones', []);
+			// final(this, 'zones', []);
 			this.capital = null;
 			if(numPlayers === 2)
 				this.capital2 = null;
