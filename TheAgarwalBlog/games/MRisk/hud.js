@@ -50,3 +50,76 @@ class HUD {
         );
     }
 }
+
+/*
+// Define the box properties
+const boxWidth = 200;
+const boxHeight = 100;
+const boxX = 100;
+const boxY = 50;
+
+// Define the trapezoid properties
+const topWidth = 50;
+const bottomWidth = 100;
+const height = 75;
+
+// Initial y position of the trapezoid (outside the box)
+let yPosition = -height;
+
+// Animation speed (pixels per frame)
+const animationSpeed = 5;
+
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
+
+function drawBox() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+}
+
+function drawClippedTrapezoid(y) {
+  // Save drawing state
+  ctx.save();
+
+  // Clip the drawing area to the box
+  ctx.beginPath();
+  ctx.rect(boxX, boxY, boxWidth, boxHeight);
+  ctx.clip();
+
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.moveTo(boxX, y);
+  ctx.lineTo(boxX + topWidth, y + height);
+  ctx.lineTo(Math.min(boxX + bottomWidth, boxX + boxWidth - (y - boxY) / height * (bottomWidth - topWidth)), y + height);
+  ctx.lineTo(boxX + boxWidth, y);
+  ctx.closePath();
+  ctx.fill();
+
+  // Restore drawing state
+  ctx.restore();
+}
+
+function animate() {
+  yPosition += animationSpeed;
+
+  // Clear canvas before drawing
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawBox();
+
+  // Check if trapezoid is within the box
+  if (yPosition <= boxY + boxHeight) {
+    drawClippedTrapezoid(yPosition);
+  } else {
+    // Reset y position for next animation cycle
+    yPosition = -height;
+  }
+
+  requestAnimationFrame(animate);
+}
+
+// Start the animation
+animate();
+
+
+*/
