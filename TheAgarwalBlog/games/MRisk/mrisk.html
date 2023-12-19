@@ -39,6 +39,7 @@
 <script type="text/javascript" src="button.js"> </script>
 <script type="text/javascript" src="attack.js"> </script>
 <script type="text/javascript" src="hud.js"> </script>
+<script type="text/javascript" src="animatedDrawing.js"> </script>
 
 
 <script type="text/javascript">
@@ -110,12 +111,18 @@
 
 		curPlayer().drawHUD(ctx);
 		HUDObj.draw(ctx);
-		// ctx.strokeStyle = "#fff";
-		// ctx.beginPath();
-		// ctx.arc(width/2, height/2, Math.min(width, height)/4, time / 10, time /10 + 1.57);
-		// ctx.stroke();
-		// ctx.closePath();
-
+		
+		if(playerChangeAnimation.shouldDrawAndUpdate()) {
+			let player = curPlayer();
+			// ctx.save();
+			// // Clip the drawing area to the box
+			// ctx.beginPath();
+			// ctx.rect(player.panelX, player.panelY, player.panelWidth, player.panelHeight);
+			// ctx.clip();
+			playerChangeAnimation.drawAndUpdate(ctx);
+			// Restore drawing state
+			// ctx.restore();
+		}
 		requestAnimationFrame(draw);
 	}
 </script>
@@ -171,8 +178,15 @@
 		new Zone('Milan', 		2*w, 4*h, ['Geneva', 'Stuttgart', 'Munich', 'Graz', 'Monaco', 'Venice']),
 	]
 	let MAP = new GameMap(ZONES, w, h);
-	let PLAYERS = [ new Player("#f00", 2), new Player("#0f0", 2) ];
+	let PLAYERS = [ 
+		new Player("#f00", 2, width, height), 
+		new Player("#0f0", 2, width, height) 
+	];
 	let HUDObj = new HUD(width, height);
+	let playerChangeAnimation = new AnimatedDrawing(30, 
+		PLAYERS[0].panelX, PLAYERS[0].panelY, 
+		PLAYERS[0].panelWidth, PLAYERS[0].panelHeight
+	);
 
 	let currentPlayerIndex = 0;
 
@@ -182,6 +196,7 @@
 		if(currentPlayerIndex == PLAYERS.length){
 			currentPlayerIndex = 0;
 		}
+		playerChangeAnimation.start();
 	}
 
 	HUDObj.label = 'Red Player must choose their Capital.';
