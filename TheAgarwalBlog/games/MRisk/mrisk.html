@@ -114,14 +114,7 @@
 		
 		if(playerChangeAnimation.shouldDrawAndUpdate()) {
 			let player = curPlayer();
-			// ctx.save();
-			// // Clip the drawing area to the box
-			// ctx.beginPath();
-			// ctx.rect(player.panelX, player.panelY, player.panelWidth, player.panelHeight);
-			// ctx.clip();
 			playerChangeAnimation.drawAndUpdate(ctx);
-			// Restore drawing state
-			// ctx.restore();
 		}
 		requestAnimationFrame(draw);
 	}
@@ -295,6 +288,7 @@
 							HUDObj.label = resolveAttack(zone, victim);
 							MAP.highlight(s => true, false);
 							// changePlayer(); // We let a player make as many attacks as they want before passing
+							PLAYERS = checkVictoryAndDeclare(PLAYERS);
 							pressButton(btnCall); // Let player choose another action
 						}
 						pickZone(victimCallback); // Let player choose another zone for destination of attack

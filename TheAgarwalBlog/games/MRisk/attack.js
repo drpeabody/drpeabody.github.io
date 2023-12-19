@@ -149,3 +149,27 @@ resolveAttack = (attacker, victim) => {
 	// Return Message
 	return `Your Attack from ${attacker.name} to ${victim.name} with was a success!`;
 }
+
+checkVictoryAndDeclare = (players) => {
+	let playresLostCount = 0;
+
+	for(player of players) {
+		if(player.capital && player.capital.master.color !== player.color) {
+
+			if(player.capital2 && player.capital2.master.color !== player.color) {
+				// This player has lost all capitals
+				playresLostCount ++;
+				players = players.filter(p => p.color !== player.color);
+			}
+		}
+	}
+
+	if(players.length === 1) {
+		alert(((players[0].color === "#0f0")? "Green": "Red") + " Player has won the game!")
+	} else {
+		return players;
+	}
+
+
+
+}
