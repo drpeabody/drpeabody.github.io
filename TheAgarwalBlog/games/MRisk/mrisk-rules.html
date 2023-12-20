@@ -18,37 +18,40 @@
 
 MRisk is a risk inspired game made only on HTML and JS. It runs in your web browser and does not need to install anything.  
 A game of Risk involves territories captured by players, investing into the territories and capturing enemy territories.  
-Each player has capital territories, which when captured by another player, automatically eliminates the player whose capital is captured.  
+Each player has Capital Territories, which when captured by another player, automatically eliminates the player whose capital is captured.  
 
 ## Starting the Game
 
 The game starts with only two Players: Red, and Green.  
 There is a map serving as a board on which these two players will play the game.  
 On the Map there are several territories, some in dark grey and some in light grey.
+Each territory has a name, and houses three types of armies, Infantry, Cavalry and Artillery
+indicated by numbers on the tile of the territory (x-y-z means there are x Infantry units, 
+y Cavalry units and z Artilley units in this territory).
 
-### Choosing Capital cities
+### Choosing Capital Territories
 
-The first step for each player is to select two capital territories each.  
+The first step for each player is to select two Capital Territories each.  
 This happens alternatively, starting with Red.  
 Out of all the territories, the game randomly selects 10 territories, highlights them in light grey color.  
-Red can choose any one of these light grey territories to be their capital.  
-A capital city is denoted by a bright boundary around the territory with their color.  
+Red can choose any one of these light grey territories to be their Capital.  
+A Capital Territory is denoted by a bright boundary around the territory with their color.  
 ![Capital](assets/capital.png =180x120)
 
 ### Initial Territorial Assignment
 
-After the Red and Green players have each chosen two capital territories each, the game will automatically calculate the remaining 
+After the Red and Green players have each chosen two Capital territories each, the game will automatically calculate the remaining 
 unassigned (grey) territories, shuffle them in a random order and assign half of them to Green and the other half to Red.  
-This means out of the 40 total territories, 4 being chosen as capitals, the remaining 36 get divided evenly 
+This means out of the 40 total territories, 4 being chosen as Capitals, the remaining 36 get divided evenly 
 between Red and Green, both of them getting 18 territories each always.
 
 ### State of the game at the beginning
 
-After the capital cities are selected, each player starts with 24 units of gold.
+After the Capital Territories are selected, each player starts with 24 units of gold.
 The HUD on the right completes itself:
 1. Color reflects the current player, Red or Green
 2. Gold Pile Number reflects the current gold pile, which can be used to add armies to a player's territories
-3. Capital Cities' names of the current player
+3. Capital Territories' names of the current player
 4. Total Number of zones owned by the player currently
 5. Reminder of the cost of armies when adding armies to a player's territories
 
@@ -57,7 +60,10 @@ The HUD on the right completes itself:
 
 ## Playing the Game
 
-After the capital cities are selected, the player gets 3 actions, the main gameplay loop:
+After the Capital cities are selected, the player gets 3 actions, the main gameplay loop. 
+Each turn a player can choose exactly one type of action (Add or Attack), but as many times as they want.
+Once the player is done making as many Add actions, or Attack actions, they can click the "Pass" button to 
+pass the turn to the 2nd player. Here is a short description of the Actions:
 
 ### Action 1: Add Armies
 
@@ -80,3 +86,19 @@ There are 3 conditions for a valid attack:
 2. The attack target territory must be owned by the enemy 
 3. The initiating territory and target territory must be neighbours on the map.  
 Each territory has at most 8 neighbours when surrounded on all sides.
+
+The winner of an attack is calculated as per an algorithm, which has following principles:
+1. 1 Infantry can kill 0.5 Cavalry and 1 Cavalry can kill 2 Infantry
+2. 1 Cavalry can kill 0.5 Artillery and 1 Artillery can kill 2 Cavalry
+3. 1 Artillery can kill 3 Infantry and 1 Infantry can kill 0.33 Artillery
+4. Artillery attacks first, followed by Cavalry followed by Infantry.
+5. Artillery defends first, followed by Cavalry followed by Infantry.
+6. If the attack is success, the attacking player is awarded Maximum of (1, Half of Defending Army Gold Cost).
+7. Since each territory requires at least 1 army unit to be occupied, if the attacker wins, 1 weakest army unit 
+is left behind and the rest of thier army is transferred to the territory conquered.
+
+## Ending the Game
+
+Once a player has conquered both the Capital Territories of another player, the game ends.
+The player who conquers all Capital Territories of a player are lost, they lose the game.
+The winning player conquers both the Capital Territories of the all other players.
