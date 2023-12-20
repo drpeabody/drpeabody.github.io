@@ -49,6 +49,14 @@ class HUD {
             s.name !== "Infantry" && s.name !== "Cavalry" && s.name !== "Artillery"
         );
     }
+
+    enableAllButtons() {
+        this.buttons.forEach(s => { s.disabled = false; });
+    }
+
+    disableButton(buttonName) {
+        this.buttons.filter(s => s.name === buttonName).forEach(s => { s.disabled = true; });
+    }
 }
 
 /*
