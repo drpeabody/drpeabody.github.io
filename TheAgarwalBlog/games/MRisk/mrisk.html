@@ -289,6 +289,10 @@
 								pickZone(victimCallback); // Let player choose another zone for destination of attack
 								return;
 							}
+							else {
+								HUDObj.label = `You need to pick an enemy territory to attack, cancelling attack.`;
+								pressButton(btnCall);  // Let player choose another action
+							}
 							MAP.highlight(s => s.name === victim.name, true);
 							HUDObj.label = resolveAttack(zone, victim);
 							if(HUDObj.label !== `Attack failed`)
@@ -300,7 +304,11 @@
 						}
 						pickZone(victimCallback); // Let player choose another zone for destination of attack
 					}
-					else pickZone(zoneCallback); // Let player choose another zone for source of attack
+					else {
+						HUDObj.label = `You need to pick a territory you own to attack from, cancelling attack.`;
+						pressButton(btnCall);  // Let player choose another action
+						// pickZone(zoneCallback); // Let player choose another zone for source of attack
+					}
 				}
 				pickZone(zoneCallback); // Let player choose another zone for source of attack
 			} else if (btn.name === 'Pass') {
