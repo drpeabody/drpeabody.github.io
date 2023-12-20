@@ -79,6 +79,9 @@
 		}
 		if(e.button === 0 && hudButtonCallback){
 			let btn = HUDObj.getButtonAt(e.clientX, e.clientY);
+			if(btn && btn.isDisabled()) {
+				return;	
+			}
 			let f = hudButtonCallback;
 			hudButtonCallback = undefined;
 			f(btn);
@@ -190,6 +193,7 @@
 			currentPlayerIndex = 0;
 		}
 		playerChangeAnimation.start();
+		HUDObj.enableAllButtons();
 	}
 
 	HUDObj.label = 'Red Player must choose their Capital.';
@@ -261,6 +265,7 @@
 							HUDObj.hideAddButtons();
 							zone[troop] += num;
 							curPlayer().gold -= num * COST_TROOP[troop];
+							HUDObj.disableButton("Attack"); // Disable Attack button as you can only add or attack per turn
 							HUDObj.label = `Added ${num} ${troop} to ${zone.name}.`;
 							pressButton(btnCall); // Let player choose another action
 						}
@@ -286,6 +291,8 @@
 							}
 							MAP.highlight(s => s.name === victim.name, true);
 							HUDObj.label = resolveAttack(zone, victim);
+							if(HUDObj.label !== `Attack failed`)
+								HUDObj.disableButton("Add"); // Disable Add button as you can only add or attack per turn
 							MAP.highlight(s => true, false);
 							// changePlayer(); // We let a player make as many attacks as they want before passing
 							PLAYERS = checkVictoryAndDeclare(PLAYERS);
