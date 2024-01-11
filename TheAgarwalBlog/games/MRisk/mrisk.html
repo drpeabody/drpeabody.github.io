@@ -195,6 +195,13 @@
 		playerChangeAnimation.start();
 		HUDObj.enableAllButtons();
 	}
+	changePlayerAddGold = () => {
+		HUDObj.label = `${curPlayer().name} Player's turn. You gained ${Math.ceil(curPlayer().numZonesOwned/2)} gold from your territories.`;
+		for(let player of PLAYERS) { 
+			player.gold += Math.ceil(player.numZonesOwned/2); 
+		}
+		changePlayer();
+	}
 
 	HUDObj.label = 'Red Player must choose their Capital.';
 	curPlayer().choseCapital(() => {
@@ -312,7 +319,7 @@
 				}
 				pickZone(zoneCallback); // Let player choose another zone for source of attack
 			} else if (btn.name === 'Pass') {
-				changePlayer();
+				changePlayerAddGold();
 				pressButton(btnCall); // Let new player choose an action
 			}
 		};
