@@ -175,8 +175,8 @@
 	]
 	let MAP = new GameMap(ZONES, w, h);
 	let PLAYERS = [ 
-		new Player("#f00", 2, width, height), 
-		new Player("#0f0", 2, width, height) 
+		new Player("#f00", 2, width, height, "Red"), 
+		new Player("#0f0", 2, width, height, "Green") 
 	];
 	let HUDObj = new HUD(width, height);
 	let playerChangeAnimation = new AnimatedDrawing(30, 

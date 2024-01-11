@@ -1,9 +1,10 @@
 
 	class Player {
-		constructor(color, numPlayers, width, height){
+		constructor(color, numPlayers, width, height, name = 'PlayerInstance'){
 			assert(color, NotEmpty, 'Color Cannot be Empty');
 			assert(color.charAt(0), '#', 'Color must be a hex code');
 			final(this, 'color', color);
+			final(this, 'name', name);
 			// final(this, 'zones', []);
 			this.capital = null;
 			if(numPlayers === 2)
