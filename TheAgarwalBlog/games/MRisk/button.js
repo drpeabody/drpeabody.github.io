@@ -11,10 +11,14 @@ class Button {
 		final(this, 'w', Math.floor(w));
 		final(this, 'h', Math.floor(h));
 		final(this, 'name', name);
+		this.disabled = false;
 	}
 
 	draw(ctx) {
 		ctx.fillStyle = "#ff0";
+		if(this.disabled) {
+			ctx.fillStyle = "#550";
+		}
 		ctx.fillRect(this.x, this.y, this.w, this.h);
 		ctx.fillStyle = "#000";
 		let g = ctx.measureText(this.name);
@@ -26,5 +30,9 @@ class Button {
 			return (this.y < y && this.y + this.h > y);
 		}
 		return false;
+	}
+
+	isDisabled() {
+		return this.disabled;
 	}
 }

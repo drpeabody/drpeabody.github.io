@@ -38,6 +38,8 @@
 <script type="text/javascript" src="player.js"> </script>
 <script type="text/javascript" src="button.js"> </script>
 <script type="text/javascript" src="attack.js"> </script>
+<script type="text/javascript" src="hud.js"> </script>
+<script type="text/javascript" src="animatedDrawing.js"> </script>
 
 
 <script type="text/javascript">
@@ -76,7 +78,10 @@
 			f(zone);
 		}
 		if(e.button === 0 && hudButtonCallback){
-			let btn = HUD.getButtonAt(e.clientX, e.clientY);
+			let btn = HUDObj.getButtonAt(e.clientX, e.clientY);
+			if(btn && btn.isDisabled()) {
+				return;	
+			}
 			let f = hudButtonCallback;
 			hudButtonCallback = undefined;
 			f(btn);
@@ -108,13 +113,12 @@
 		ctx.translate(-camera.x, -camera.y);
 
 		curPlayer().drawHUD(ctx);
-		HUD.draw(ctx);
-		// ctx.strokeStyle = "#fff";
-		// ctx.beginPath();
-		// ctx.arc(width/2, height/2, Math.min(width, height)/4, time / 10, time /10 + 1.57);
-		// ctx.stroke();
-		// ctx.closePath();
-
+		HUDObj.draw(ctx);
+		
+		if(playerChangeAnimation.shouldDrawAndUpdate()) {
+			let player = curPlayer();
+			playerChangeAnimation.drawAndUpdate(ctx);
+		}
 		requestAnimationFrame(draw);
 	}
 </script>
@@ -170,52 +174,16 @@
 		new Zone('Milan', 		2*w, 4*h, ['Geneva', 'Stuttgart', 'Munich', 'Graz', 'Monaco', 'Venice']),
 	]
 	let MAP = new GameMap(ZONES, w, h);
-	let PLAYERS = [ new Player("#f00", 2), new Player("#0f0", 2) ];
-	let HUD = {
-		x: 0, y: height*0.825, w: width*0.8, h: height*0.175,
-		labelX: width * 0.05, labelY: height*0.975,
-		buttons: [],
-		label: '',
+	let PLAYERS = [ 
+		new Player("#f00", 2, width, height, "Red"), 
+		new Player("#0f0", 2, width, height, "Green") 
+	];
+	let HUDObj = new HUD(width, height);
+	let playerChangeAnimation = new AnimatedDrawing(30, 
+		PLAYERS[0].panelX, PLAYERS[0].panelY, 
+		PLAYERS[0].panelWidth, PLAYERS[0].panelHeight
+	);
 
-		initButtons: () => {
-			HUD.buttons = HUD.buttons.concat([ 
-				new Button('Add', width * 0.05, height * 0.87, width*0.05, height*0.065),
-				new Button('Attack', width * 0.125, height * 0.87, width*0.05, height*0.065),
-				new Button('Pass', width * 0.2, height * 0.87, width*0.05, height*0.065),
-			]);
-		},
-
-		draw: (ctx) => {
-			ctx.fillStyle = "#ff04";
-			ctx.fillRect(HUD.x, HUD.y, HUD.w, HUD.h);
-			HUD.buttons.forEach(s => s.draw(ctx));
-			ctx.fillStyle = "#fff";
-			ctx.fillText(HUD.label, HUD.labelX, HUD.labelY);
-		},
-
-		getButtonAt: (x, y) => {
-			for(let i of HUD.buttons){
-				if(i.contains(x, y)) return i;
-			}
-		},
-
-		showAddButtons: () => {
-			HUD.buttons = HUD.buttons.concat([
-				new Button("Infantry", width * 0.50, height * 0.87, width*0.075, height*0.1),
-				new Button("Cavalry", width * 0.60, height * 0.87, width*0.075, height*0.1),
-				new Button("Artillery", width * 0.70, height * 0.87, width*0.075, height*0.1),
-			]);
-		},
-		hideAddButtons: () => {
-			HUD.buttons = HUD.buttons.filter(s => 
-				s.name !== "Infantry" && s.name !== "Cavalry" && s.name !== "Artillery"
-			);
-		}
-	}
-
-	let COST_TROOP = {
-		'Infantry': 1, 'Cavalry': 3, 'Artillery': 5
-	};
 	let currentPlayerIndex = 0;
 
 	curPlayer = () => { return PLAYERS[currentPlayerIndex]; }
@@ -224,21 +192,30 @@
 		if(currentPlayerIndex == PLAYERS.length){
 			currentPlayerIndex = 0;
 		}
+		playerChangeAnimation.start();
+		HUDObj.enableAllButtons();
+	}
+	changePlayerAddGold = () => {
+		HUDObj.label = `${curPlayer().name} Player's turn. You gained ${Math.ceil(curPlayer().numZonesOwned/2)} gold from your territories.`;
+		for(let player of PLAYERS) { 
+			player.gold += Math.ceil(player.numZonesOwned/2); 
+		}
+		changePlayer();
 	}
 
-	HUD.label = 'Red Player must choose their Capital.';
+	HUDObj.label = 'Red Player must choose their Capital.';
 	curPlayer().choseCapital(() => {
-		HUD.label = 'Green Player must choose their Capital.';
+		HUDObj.label = 'Green Player must choose their Capital.';
 		changePlayer();
 		curPlayer().choseCapital(() => {
-			HUD.label = 'Red Player must choose their Capital.';
+			HUDObj.label = 'Red Player must choose their Capital.';
 			changePlayer();
 			curPlayer().choseCapital(() => {
-				HUD.label = 'Green Player must choose their Capital.';
+				HUDObj.label = 'Green Player must choose their Capital.';
 				changePlayer();
 				curPlayer().choseCapital(() => {
-					HUD.label = 'All other zones have been randomly distributed. It is Green player\'s turn.';
-					HUD.initButtons();
+					HUDObj.label = 'All other zones have been randomly distributed. It is Green player\'s turn.';
+					HUDObj.initButtons();
 					MAP.randomlyAlotPlayers();
 					setTimeout(playGame, 1);
 				});
@@ -259,43 +236,44 @@
 				return;
 			}
 			if (btn.name === 'Add') {
-				HUD.showAddButtons();
-				HUD.label = 'Choose Infantry, Cavalry, or Artillery. Click anywhere else to cancel.';
+				HUDObj.showAddButtons();
+				HUDObj.label = 'Choose Infantry, Cavalry, or Artillery. Click anywhere else to cancel.';
 				pressButton((b) => {
 					if(!b || (b.name !== 'Infantry' && b.name !== 'Cavalry' && b.name !== 'Artillery')) {
-								HUD.label = 'You have selected to cancel adding.';
-						HUD.hideAddButtons();
+						HUDObj.label = 'You have selected to cancel adding.';
+						HUDObj.hideAddButtons();
 						pressButton(btnCall); // Let player choose another action
 						return;
 					}
 					let troop = b.name;
-					HUD.label = `Choose a territory to place your ${troop}.`;
+					HUDObj.label = `Choose a territory to place your ${troop}.`;
 					MAP.highlight(s => s.master === curPlayer(), true);
 
 					// Define operation of game when player chooses a zone for adding armies
 					let zoneCallback = (zone) => {
 						if(zone && zone.master === curPlayer()) {
-							HUD.label = `You have chosen ${zone.name}.`;
+							HUDObj.label = `You have chosen ${zone.name}.`;
 							let val = prompt(`Enter the number of ${troop} to add to ${zone.name}`);
 							if(val === null){
-								HUD.hideAddButtons();
+								HUDObj.hideAddButtons();
 								MAP.highlight(s => true, false);
-								HUD.label = 'You have selected to cancel adding.';
+								HUDObj.label = 'You have selected to cancel adding.';
 								pressButton(btnCall); // Let player choose another action
 								return;
 							}
 							let num = parseInt(val);
 							if(isNaN(num) || curPlayer().gold - num * COST_TROOP[troop] < 0){
-								HUD.label = `Choose a territory to place your ${troop}.`;
+								HUDObj.label = `Choose a territory to place your ${troop}.`;
 								alert('Please enter a valid number.');
 								pickZone(zoneCallback); // Let player choose another zone for adding armies
 								return;
 							}
 							MAP.highlight(z => true, false);
-							HUD.hideAddButtons();
+							HUDObj.hideAddButtons();
 							zone[troop] += num;
 							curPlayer().gold -= num * COST_TROOP[troop];
-							HUD.label = `Added ${num} ${troop} to ${zone.name}.`;
+							HUDObj.disableButton("Attack"); // Disable Attack button as you can only add or attack per turn
+							HUDObj.label = `Added ${num} ${troop} to ${zone.name}.`;
 							pressButton(btnCall); // Let player choose another action
 						}
 						else pickZone(zoneCallback); // Let player choose another zone for adding armies
@@ -304,13 +282,13 @@
 				});
 			}
 			else if (btn.name === 'Attack') {
-				HUD.label = 'Choose one of your territories to start attack.';
+				HUDObj.label = 'Choose one of your territories to start attack.';
 
 				// Define operation of game when player chooses a zone for initiating attack
 				let zoneCallback = (zone) => {
 					if(zone && zone.master === curPlayer()) {
 						MAP.highlight(s => s.name === zone.name, true);
-						HUD.label = `You have chosen ${zone.name}, choose a neighbour to attack.`;
+						HUDObj.label = `You have chosen ${zone.name}, choose a neighbour to attack.`;
 
 						// Define operation of game when player chooses a zone for destination of attack
 						victimCallback = (victim) => {
@@ -318,18 +296,30 @@
 								pickZone(victimCallback); // Let player choose another zone for destination of attack
 								return;
 							}
+							else {
+								HUDObj.label = `You need to pick an enemy territory to attack, cancelling attack.`;
+								pressButton(btnCall);  // Let player choose another action
+							}
 							MAP.highlight(s => s.name === victim.name, true);
-							HUD.label = resolveAttack(zone, victim);
-							changePlayer();
+							HUDObj.label = resolveAttack(zone, victim);
+							if(HUDObj.label !== `Attack failed`)
+								HUDObj.disableButton("Add"); // Disable Add button as you can only add or attack per turn
+							MAP.highlight(s => true, false);
+							// changePlayer(); // We let a player make as many attacks as they want before passing
+							PLAYERS = checkVictoryAndDeclare(PLAYERS);
 							pressButton(btnCall); // Let player choose another action
 						}
 						pickZone(victimCallback); // Let player choose another zone for destination of attack
 					}
-					else pickZone(zoneCallback); // Let player choose another zone for source of attack
+					else {
+						HUDObj.label = `You need to pick a territory you own to attack from, cancelling attack.`;
+						pressButton(btnCall);  // Let player choose another action
+						// pickZone(zoneCallback); // Let player choose another zone for source of attack
+					}
 				}
 				pickZone(zoneCallback); // Let player choose another zone for source of attack
 			} else if (btn.name === 'Pass') {
-				changePlayer();
+				changePlayerAddGold();
 				pressButton(btnCall); // Let new player choose an action
 			}
 		};

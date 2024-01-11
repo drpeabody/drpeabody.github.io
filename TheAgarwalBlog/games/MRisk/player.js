@@ -1,15 +1,20 @@
 
 	class Player {
-		constructor(color, numPlayers){
+		constructor(color, numPlayers, width, height, name = 'PlayerInstance'){
 			assert(color, NotEmpty, 'Color Cannot be Empty');
 			assert(color.charAt(0), '#', 'Color must be a hex code');
 			final(this, 'color', color);
-			final(this, 'zones', []);
+			final(this, 'name', name);
+			// final(this, 'zones', []);
 			this.capital = null;
 			if(numPlayers === 2)
 				this.capital2 = null;
 			this.gold = 24;
 			this.numZonesOwned = 0;
+			this.panelX = width * 0.8;
+			this.panelY = 0;
+			this.panelWidth = 0.2*width;
+			this.panelHeight = height;
 		}
 
 		choseCapital(callback) {
@@ -48,7 +53,7 @@
 
 		drawHUD(ctx) {
 			ctx.fillStyle = this.color + "4";
-			ctx.fillRect(width * 0.8, 0, 0.2*width, height);
+			ctx.fillRect(this.panelX, this.panelY, this.panelWidth, this.panelHeight);
 			ctx.fillStyle = "#fff";
 			ctx.fillText("Gold: " + this.gold, width * 0.825, height * 0.1);
 			if(this.capital)
@@ -59,5 +64,13 @@
 			ctx.fillText("Cost of Infantry: 1", width * 0.825, height * 0.3);
 			ctx.fillText("Cost of Cavalry: 3", width * 0.825, height * 0.35);
 			ctx.fillText("Cost of Artillery: 5", width * 0.825, height * 0.4);
+		}
+
+		addGold(goldToBeAdded) {
+			this.gold = this.gold + goldToBeAdded;
+		}
+
+		changeNumZonesOwnedBy(numZonesDiffernce) {
+			this.numZonesOwned = this.numZonesOwned + numZonesDiffernce;
 		}
 	}
