@@ -116,7 +116,6 @@
 		HUDObj.draw(ctx);
 		
 		if(playerChangeAnimation.shouldDrawAndUpdate()) {
-			let player = curPlayer();
 			playerChangeAnimation.drawAndUpdate(ctx);
 		}
 		requestAnimationFrame(draw);
