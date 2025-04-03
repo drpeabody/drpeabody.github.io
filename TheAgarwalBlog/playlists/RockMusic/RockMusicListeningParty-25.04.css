@@ -7,6 +7,7 @@ body {
     font-optical-sizing: auto;
     font-weight: 200;
     font-style: normal;
+    text-shadow: 1px 1px 5px black, 1px 1px 5px black, 1px 1px 5px black;
 
 }
 
@@ -16,7 +17,6 @@ h1 {
 
 .song-lyrics {
     white-space: pre-wrap;
-    text-shadow: 1px 1px 5px black, 1px 1px 5px black, 1px 1px 5px black;
 }
 
 .song {
@@ -66,3 +66,64 @@ h1 {
     background-position-x: 10vw;
     background-position-y: 20vh;
 }
+
+
+#carnival-of-rust.song-bg{
+    background: url("carnival-of-rust.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+
+#have-a-cigar.song-bg{
+    background: url("have-a-cigar.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+#man-in-the-box.song-bg{
+    background: url("man-in-the-box.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+#i-am-the-highway.song-bg{
+    background: url("i-am-the-highway.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+
+#overflow.song-bg{
+    background: url("overflow.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+
+#summer-of-69.song-bg{
+    background: url("summer-of-69.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+#sympathy-for-the-devil.song-bg{
+    background: url("sympathy-for-the-devil.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
