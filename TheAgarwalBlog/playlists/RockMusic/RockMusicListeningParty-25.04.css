@@ -1,0 +1,68 @@
+
+body {
+    background-color: #111;
+    color: #ddd;
+
+    font-family: "Ysabeau SC", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+
+}
+
+h1 {
+    font-weight: 800;
+}
+
+.song-lyrics {
+    white-space: pre-wrap;
+    text-shadow: 1px 1px 5px black, 1px 1px 5px black, 1px 1px 5px black;
+}
+
+.song {
+    padding-top: 10vh;
+    padding-bottom: 10vh;
+    
+    margin-left: 5%;
+}
+
+.song-bg {
+    
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    
+    position: absolute;
+    z-index: -10;
+    width: 50vw;
+    height: 50vw;
+    
+}
+
+#stairway-to-heaven.song-bg{
+    background: url("led-zeppelin-4.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+
+#plush.song-bg{
+    background: url("core.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+
+#going-under.song-bg{
+    background: url("fallen.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
