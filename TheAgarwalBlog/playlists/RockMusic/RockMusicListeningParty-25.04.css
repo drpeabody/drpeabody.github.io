@@ -26,6 +26,13 @@ h1 {
     margin-left: 5%;
 }
 
+#have-a-cigar.song {
+    padding-bottom: 20vh;
+}
+#man-in-the-box.song {
+    padding-bottom: 20vh;
+}
+
 .song-bg {
     
     -webkit-filter: blur(5px);
@@ -127,3 +134,26 @@ h1 {
     background-position-y: 20vh;
 }
 
+#thunderstruck.song-bg{
+    background: url("thunderstruck.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+#new-divide.song-bg{
+    background: url("new-divide.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
+
+#numb.song-bg{
+    background: url("numb.jpg");
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: 10vw;
+    background-position-y: 20vh;
+}
