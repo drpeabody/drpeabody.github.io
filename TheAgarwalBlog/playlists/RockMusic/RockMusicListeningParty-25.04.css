@@ -43,8 +43,8 @@ h1 {
     
     position: absolute;
     z-index: -10;
-    width: 50vw;
-    height: 50vw;
+    width: min(50vw, 500px);
+    height: max(50vw, 50vh);
     
 }
 
