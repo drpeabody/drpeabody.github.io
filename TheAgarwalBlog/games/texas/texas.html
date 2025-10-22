@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Bree+Serif|Artifika|Major+Mono+Display" rel="stylesheet"> 
+	<title>TEXAS - Text Based Strategy</title>
+</head>
+<style type="text/css">
+	body{
+	    font-family: 'Artifika', serif;
+	    font-size: 18px;
+		text-align: center;  
+		background: #000300;
+		color: #8a6;
+		letter-spacing: 1px;
+	}
+	h1 {
+		margin-top: 1vh;
+		font-size: 2.6em;
+		font-family: 'Bree Serif', serif;
+		margin-bottom: 0;
+		letter-spacing: 2px;
+	}
+	h2 {
+		margin-top: 1vh;
+		font-size: 1.7em;
+		font-family: 'Bree Serif', serif;
+		margin-bottom: 3vh;
+		letter-spacing: 2px;
+	}
+	.right-panel {
+		right: 2vw;
+		width: 39vw;
+	}
+	.info-panel {
+		left: 2vw;
+		width: 55vw;
+	}
+	.bottom-panel {
+		left: 2vw;
+		top: 87vh;
+		width: 95.5vw;
+		max-height: 10vh;
+		overflow-y: hidden;
+		background: linear-gradient(to top, rgba(30, 9, 134, 0.2), rgba(30, 9, 134, 0.1));
+	}
+	.cmd {
+		margin-top: 3vh;
+		width: 70%;
+	}
+	ul {
+		text-align: left;
+		/*display: box;*/
+	}
+	.panel {
+		height: 62vh;
+		position: absolute;
+		overflow-y: scroll;
+		background: linear-gradient(to bottom, rgba(30, 9, 134, 0.2), rgba(30, 9, 134, 0.1));
+	    border: 2px solid #060;
+	    border-radius: 7px;
+	    outline: none;
+	    border-color: #003c00;
+	    box-shadow: 0 0 10px #003c00;
+	    /*transition: all 0.5s ease;*/
+	}
+	.meter {
+		padding-right: 5vw;
+		float: right;
+		font-family: 'Major Mono Display', monospace;
+		color: white;
+	}
+
+	::-webkit-scrollbar {
+	    height: 4px;
+	    width: 4px;
+	    right: 100px;
+	    background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+	    background: #999;
+		padding-right: 3px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+	    background: #fff;
+		padding-right: 3px;
+	}
+
+	::-webkit-scrollbar-corner {
+	    background: transparent;
+	}
+
+	@-moz-document url-prefix() {
+		/* Firefox Only */
+		h1 {
+			font-size: 42px;
+			letter-spacing: 1px;
+		}
+		h2 {
+			font-size: 28px;
+			letter-spacing: 1px;
+		}
+	    body {
+	    	font-size: 16.5px;
+			background: #010d02;
+	    }
+	}
+</style>
+<body>
+
+	<h1>TEXAS</h1>
+	<h2>A Text Based Strategy Game.</h2>
+
+	<div class="right-panel panel">
+		<h3>Logs</h3>
+		<ul id="logger">
+			
+		</ul>
+	</div>
+
+	<div class="panel bottom-panel">
+		Type in Your Command: <input type="text" class="cmd">
+	</div>
+
+	<div class="info-panel panel">
+		<h3>Here is Your Status</h3>
+		<ul>
+			<li> Health: <span id="healthmeter" class="meter"></span> </li>
+			<li> Location: <span id="locationmeter" class="meter"></span></li>
+			<li> Inventory: 
+				<span><ul id="list-invent"></ul></span>
+			</li>
+		</ul>
+	</div>
+
+</body>
+
+<script type="text/javascript"> 
+	// These are some utility functions to make life easier
+	// The game doesn't depend upon them
+
+	// $() -> 							document
+	// $(".abc") -> 					HTMLCollection with all elements that have class 'abc'
+	// $(".abc", n) -> 					nth node in HTMLCollection with all 
+	//									elements that have class 'abc'
+	// $("#fgh") -> 					element with id "fgh"
+	// $("#fgh", 'li some string') -> 	insert 'li' node with innerHTML = 'some string' 
+	//									into element whose id is 'fgh'
+
+	var $ = (name, idx) => {
+		if(!name || name === '') return document;
+		else if(name.startsWith('.')) {
+			var docs = document.getElementsByClassName(name.substring(1));
+			if(isNaN(idx)) return docs;
+			else return docs[idx];
+		}
+		else if(name.startsWith('#')) {
+			if(!idx)
+				return document.getElementById(name.substring(1));
+			else {
+				var idxFirstSpace = idx.indexOf(" ");
+				var tag = idx.substring(0, idxFirstSpace);
+				var args = idx.substring(idxFirstSpace + 1);
+				var elem = document.createElement(tag);
+				elem.innerHTML = args;
+				elem.animate([ {opacity: 0}, {opacity: 100} ], {duration: 250});
+				document.getElementById(name.substring(1)).appendChild(elem);
+			}
+		}
+	}
+	var clog = console.log;
+	var log = (val) => {
+		$("#logger", "li " + val);
+		$('.right-panel', 0).scrollTop += 1000;
+	}
+
+	var toTitleCase = function (str) {
+        return str.replace(
+            /\w\S*/g,
+            function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
+    }
+
+    var getBar = function(percent) {
+    	var fullBarlen = 32;
+    	var num = Math.round(percent * fullBarlen / 100);
+    	return '|' + '='.repeat(num) + '&nbsp'.repeat(fullBarlen - num) + '|';
+    }
+
+    var arrayToString = function(arr) {
+    	if(!arr || arr.constructor !== Array) return arr;
+    	return arr.reduce((a, s) => a + "<br>" + s);
+    }
+
+    // Usefule Type Checking Function
+
+	// assert(!!door, true); 
+	//		Fails for null, '', undefined
+	//		Success for any non empty object
+	// assert(door instanceof Door, true);
+	//		Checks for objects that were made using new keyword
+	// assert(typeof name, 'string')
+	//		Checks of type of built in objects
+	// assert(typeof foo, 'function')
+	// 		Also works
+
+    var assert = function(obj1, obj2) {
+    	if(obj1 !== obj2) 
+    		throw Error('Assetion Failed on ' + obj1 + ', ' + obj2);
+    }
+
+</script>
+
+<script type="text/javascript">
+	// These are core game functions, please understand how they work before you change
+	var execute = (comm) => {
+		if(comm.startsWith('<script>')) {
+			log('Nice Try.');
+			return;
+		}
+		var idxFirstSpace = comm.indexOf(" ");
+		var cmd = comm.substring(0, idxFirstSpace);
+		var args = comm.substring(idxFirstSpace + 1);
+		if(idxFirstSpace === -1){
+			cmd = comm;
+			args = '';
+		}
+		if(!commands[cmd]) log('\''+ cmd + '\' is not a valid command right now.');
+		else commands[cmd](args);
+	}
+
+	var commandHistory = [];
+	var hist = 0;
+
+	$().addEventListener('keydown', (e) => {
+		var elem = $('.cmd', 0), val = $('.cmd', 0).value;
+		if(e.code === 'Enter'){
+			var cmd = val.trim();
+			if(cmd === ''){
+				log('Type help to view the commands you can use.');
+				return;
+			}
+			commandHistory.push(val);
+			elem.value = '';
+			execute(cmd);
+			hist = 0;
+		} else if(e.code === 'ArrowUp'){
+			if(val === '') hist = 0;
+			elem.value = commandHistory[commandHistory.length - hist - 1];
+			if(hist < commandHistory.length - 1) hist++;
+	        window.setTimeout(function() {
+				elem.setSelectionRange(100, 100);
+	        }, 0);
+		}
+		else if(e.code === 'ArrowDown'){
+			elem.value = commandHistory[commandHistory.length - hist - 1];
+			if(hist > 0) hist--;
+			else elem.value = '';
+	        window.setTimeout(function() {
+				elem.setSelectionRange(100, 100);
+	        }, 0);
+		}
+	});
+</script>
+
+<script type="text/javascript">
+	// This is the game, you would want to change these 
+	// To customise the game or to add more features to it.
+	const status = {
+		health: 100,
+		location: 'living-room',
+		inventory: [],
+		updateInternal: (val, elem) => {
+			if(!val || isNaN(val) || val < 0) val = 0;
+			if(val > 100) val = 100;
+			elem.innerHTML = getBar(val);
+			return val;
+		},
+		updateHealth: (val) => {
+			status.health = status.updateInternal(health, $('#healthmeter'));
+		},
+		updateLocation: (loc) => {
+			status.location = loc;
+			$('#locationmeter').innerHTML = toTitleCase(status.location);
+			if(loc === 'outside') {
+				log('Congratulaitons! You won by successfully escaping the house!');
+			}
+		}
+	}
+
+	const commands = {
+		'help': () => {
+			log(arrayToString(Object.keys(commands)));
+		},
+		'clear': () => {
+			var v = $('#logger');
+			while(v.firstChild) v.removeChild(v.firstChild);
+		},
+		'goto': (loc) => {
+			var l = status.location;
+			if(!loc || loc === ''){
+				log('You can Goto <br>' + arrayToString(map[l].adj) + '<br> from ' + l);
+			} else if(map[l].adj.includes(loc)){
+				status.updateLocation(loc);
+				log('You walked into the ' + loc);
+			} else {
+				log('Cannot goto ' + loc + ' from ' + l);
+			}
+		},
+		'look': () => {
+			var l = status.location;
+			var itemsFound = map[l].items
+				.filter(s => s.isVisible()).map(s => s.name);
+			if(itemsFound.length < 1) log('You can\'t see anything significant.');
+			else log('You see: <br>' + arrayToString(itemsFound));
+		},
+		'pickup': (item) => {
+			var l = status.location;
+			var itemsFound = map[l].items
+				.filter(s => s.name === item);
+			if(itemsFound.length < 1) log('You picked up nothing. To pick up something\
+				 you must type in its name exactly.');
+			else {
+				itemsFound.forEach(s => {
+					if(!s.isPickable()){
+						log('You cannot pickup ' + s.name);
+					} else {
+						log('You picked up: ' + s.name);
+						map[l].items = map[l].items.filter(x => x !== s);
+						$("#list-invent", 'li ' + s.name);
+						status.inventory.push(s);
+					}
+				});
+			}
+		},
+		'use': (item) => {
+			var found = status.inventory.find(s => s.name === item);
+
+			if(!found) {
+				// Find an unpickable item from the inventory
+				found = map[status.location].items.find(s => s.name === item);
+				if(!found) {
+					log('Cannot find ' + item);
+					found = false; 
+				}
+				else if(found.isPickable()){
+					log('You must pickup ' + item + ' to use it.');
+					found = false; 
+				}
+			}
+			if(found) {
+				if(!found.use) log('Cannot use useless ' + item + '.');
+				else 				found.use();
+			}
+		}
+	}
+
+	class Item {
+		// This is the super class of all objects in the game.
+		// Some objects are invisible, such as items which require you to search
+		// Some objects can be used
+		// All items have a name that is used by pattern matching to pickup or drop
+		// All usable objects must define the use() function that returns a string
+
+		constructor(look, pick, name) {
+			assert(typeof look, 'boolean');
+			assert(typeof pick, 'boolean');
+			assert(typeof name, 'string');
+			this.visible = look;
+			this.pickable = pick;
+			this.name = name;
+		}
+
+		isVisible() { return this.visible; }
+		isPickable() { return this.pickable; }
+	}
+
+	class Key extends Item {
+		constructor(name, door) { 
+  			super(true, true, name);
+  			assert(!!door, true);
+  			assert(door instanceof Door, true);
+  			this.door = door;
+		}
+
+		use() {
+			// The Door location must be the current location
+			var canUse = map.find(this.door.name) === status.location;
+
+			if(canUse) {
+				var str = 'You used ' + this.name + '. ' + this.door.name + ' is now ';
+				this.door.isLocked = !this.door.isLocked;
+				if(this.door.isLocked) str += 'locked.';
+				else str += 'unlocked.';
+				log(str);
+			}
+			else log('This key can only be used on ' + this.door.name);
+
+		}
+		// name() { return '&#9911 Key to the Front Door; }
+	}
+
+	class Door extends Item {
+		constructor(name, dest, isLocked) {
+			super(true, false, name);
+			assert(typeof isLocked, 'boolean');
+			assert(typeof dest, 'string');
+			this.dest = dest;
+			this.isLocked = isLocked;
+		}
+
+		use() {
+			if(this.isLocked) 
+				log(this.name + ' is Locked.');
+			else {
+				status.updateLocation(this.dest);
+				log('You used the ' + this.name + ' and reached the ' + this.dest);
+			}
+		}
+	}
+
+	const FrontDoor = new Door('The Front Door', 'outside', true);
+	const BedRoomDoor = new Door('The Bedroom Door', 'bedroom', true);
+	const BedRoomDoorRev = new Door('The Bedroom Door', 'staircase', false);
+	const FrontDoorKey = new Key('Key To The Front Door', FrontDoor);
+	const BedRoomDoorKey = new Key('Key To The Bedroom', BedRoomDoor);
+
+	const map = {	
+		'living-room': {
+			adj: ['kitchen', 'staircase'], //Adjacency List
+			items: [ BedRoomDoorKey, FrontDoor ]
+		},
+		'staircase': {
+			adj: ['living-room'], //Adjacency List
+			items: [ BedRoomDoor ]
+
+		},
+		'bedroom': {
+			adj: ['bathroom', 'balcony'], //Adjacency List
+			items: [ BedRoomDoorRev]
+
+		},
+		'kitchen': {
+			adj: ['living-room'], //Adjacency List
+			items: [ ]
+
+		},
+		'bathroom': {
+			adj: ['bedroom'], //Adjacency List
+			items: [ FrontDoorKey ]
+
+		},
+		'balcony': {
+			adj: ['bedroom'], //Adjacency List
+			items: [ ]
+
+		},
+		'outside': {
+			adj: [],
+			items: []
+		},
+
+		find: (itemName) => {
+			if(!itemName) return '';
+			for(var location in map){
+				if(!map[location].items) continue;
+				if(map[location].items.some(s => s.name === itemName))
+					return location;
+			}
+			return '';
+		}
+	}
+
+
+</script>
+<script type="text/javascript">
+	
+	// This is where it all begins, the place that sets the game rolling
+
+	setTimeout(() => {
+		log('Welcome to Texas, A Text Based Strategy Game.');
+		setTimeout(() => {
+			log('Type \'help\' to list the commands you can use right now,');
+			setTimeout(() => log('Follow your inventory in the status panel on the right, Good Luck!'), 2000);
+		}, 1500);
+	}, 500);
+
+	$('#locationmeter').innerHTML = toTitleCase(status.location);
+	$('#healthmeter').innerHTML = getBar(100);
+
+</script>
+</html>
