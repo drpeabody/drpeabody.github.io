@@ -1,230 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity - Game Landing Page</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-        }
+  <title>The Agarwal Blog</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
 
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23d4a574" width="100" height="100" x="50" y="100"/><rect fill="%238b6f47" width="150" height="80" x="200" y="150"/><rect fill="%23c19a6b" width="120" height="90" x="400" y="120"/><polygon fill="%23a0826d" points="600,150 700,150 650,50"/><rect fill="%23d4a574" width="100" height="120" x="800" y="100"/><rect fill="%238b6f47" width="80" height="100" x="1000" y="130"/></svg>');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            filter: blur(1px);
-        }
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-        .hamburger {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            width: 40px;
-            height: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            z-index: 10;
-        }
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 
-        .hamburger span {
-            width: 100%;
-            height: 3px;
-            background: white;
-            border-radius: 2px;
-        }
+  <!-- BoxIcons used for the icons on the landing page of the blog -->
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <!-- <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet"> -->
+  <!-- <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet"> -->
 
-        .profile {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .profile svg {
-            width: 24px;
-            height: 24px;
-            fill: #333;
-        }
-
-        .content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            max-width: 1200px;
-        }
-
-        .title {
-            font-size: clamp(4rem, 10vw, 8rem);
-            font-weight: 300;
-            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 2rem;
-            letter-spacing: 0.05em;
-        }
-
-        .tagline {
-            font-size: clamp(1.5rem, 4vw, 3.5rem);
-            color: #93c5fd;
-            font-weight: 300;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
-            padding: 0 2rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-        }
-
-        .feature-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: white;
-        }
-
-        .feature-text {
-            font-size: 1.3rem;
-            color: #e0e7ff;
-            line-height: 1.6;
-        }
-
-        .footnote {
-            position: absolute;
-            bottom: 2rem;
-            left: 2rem;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .features {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
 </head>
+
 <body>
-    <div class="hero">
-        <div class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
+
+  <!-- ======= Mobile nav toggle button ======= -->
+  <i class="bi bi-list mobile-nav-toggle d-xl-none"></i>
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="d-flex flex-column">
+
+      <div class="profile">
+        <img src="assets/img/profile-img.jpg" alt="" class="img-fluid rounded-circle">
+        <h1 class="text-light"><a href="index.html">Abhishek Agarwal</a></h1>
+        <div class="social-links mt-3 text-center">
+          <!-- <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a> -->
+          <!-- <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a> -->
+          <a href="https://www.instagram.com/hura_italian" class="instagram"><i class="bx bxl-instagram"></i></a>
+          <!-- <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a> -->
+          <a href="https://github.com/drpeabody" class="linkedin"><i class="bx bxl-github"></i></a>
         </div>
+      </div>
 
-        <div class="profile">
-            <svg viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-        </div>
-
-        <div class="content">
-            <h1 class="title">Trinity</h1>
-            
-            <div class="tagline">
-                <div>Rediscover lost wisdom.</div>
-                <div>Face the forces of evil.</div>
-                <div>Question everything.</div>
-            </div>
-
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                        </svg>
-                    </div>
-                    <div class="feature-text">Play alongside fellow Voyagers</div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h18v8zM6 15h2v-2H6v2zm3.5 0h2v-2h-2v2zm3.5 0h2v-2h-2v2z"/>
-                        </svg>
-                    </div>
-                    <div class="feature-text">An episodic story on PC, XBox and PlayStation</div>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <div class="feature-text">Uncover timeless truths about the Tri-Lok</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footnote">*Early Concept Art</div>
+      <nav id="navbar" class="nav-menu navbar">
+        <ul>
+          <li><a href="#hero" class="nav-link scrollto active"><i class="bx bx-home"></i> <span>Home</span></a></li>
+          <li><a href="#resume" class="nav-link scrollto"><i class="bx bx-file-blank"></i> <span>Resume</span></a></li>
+          <li><a href="#musings" class="nav-link scrollto"><i class="bx bx-server"></i> <span>Musings</span></a></li>
+          <li><a href="#contact" class="nav-link scrollto"><i class="bx bx-envelope"></i> <span>Contact</span></a></li>
+          <li><a href="#about" class="nav-link scrollto"><i class="bx bx-user"></i> <span>About</span></a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
     </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="hero-container">
+      <h1>Abhishek Agarwal</h1>
+      <p>Boffin, Developer, Gamer.</p>
+    </div>
+  </section><!-- End Hero -->
+
+  <main id="main">
+
+    <!-- ======= Facts Section ======= -->
+    <section id="facts" class="facts">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Facts</h2>
+          <p>Some random numbers.</p>
+        </div>
+
+        <div class="row no-gutters">
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <i class="bi bi-controller"></i>
+              <span data-purecounter-start="0" data-purecounter-end="9132" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Hours</strong> spent playing games.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <i class="bi bi-camera-reels"></i>
+              <span data-purecounter-start="0" data-purecounter-end="4521" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Movies &amp; TV Show Episodes</strong> watched.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <i class="bi bi-code-slash"></i>
+              <span data-purecounter-start="0" data-purecounter-end="17453" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Lines of Code</strong> written.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch">
+            <div class="count-box">
+              <i class="bi bi-pin-map"></i>
+              <span data-purecounter-start="0" data-purecounter-end="32" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Cities</strong> visited in lifetime.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Facts Section -->
+
+    <!-- ======= Resume Section ======= -->
+    <section id="resume" class="resume">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Resume</h2>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+
+            <h3 class="resume-title">Education</h3>
+            <div class="resume-item">
+              <h4>Bachelor's with Majors in  Engineering Physics &nbsp; Minors in Computer Science</h4>
+              <h5>2017 - 2021</h5>
+              <p><em>Indian Institute of Technology Hyderabad</em></p>
+              <p>
+                4 year's engineering course with emphasis on theoretical physics and mathematics. Earned an additional minor's certificate by undertaking two extra semester's worth of courses in Computer Science.
+              </p>
+              <p>
+                Worked on Top Quark Reconstruction within the Standard Model of Physics under the supervision of Professor Priyatosh Bandhyopahdyay for my senior year.
+              </p>
+              <p>
+                Headed <em>Lambda</em>, the dev club of the college, as Coordinator in my sophomore year. Developed and deployed all online events for <em>Elan & Nvision</em>, the annual festival of the college during the same year.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <h3 class="resume-title">Professional Experience</h3>
+            <div class="resume-item">
+              <h4>Application Developer</h4>
+              <h5>2021 - Present</h5>
+              <p><em>Oracle Corporation </em></p>
+              <p> Currently working under the Product Information Management Team in Oracle India Development Centre, Hyderabad.</p>
+            </div>
+            <div class="resume-item">
+              <h4>Graphics Engineer and Dev Ops Engineer</h4>
+              <h5>2019 - 2021</h5>
+              <p><em>StoryXpress, India</em></p>
+              <p>Worked as primary maintainer of in house backend projects, co-created and maintained main video processing services. </p>
+              <p>Kick started and co-developed the initial Kubernetes topology for the backend infrastructure. </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Resume Section -->
+
+    <!-- ======= Musings & Contacts Section ======= -->
+    <section id="musings" class="musings">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Musings</h2>
+          <p> I often spend time on maintenance of multiple projects I have done in the past. Some of them are illustrated and linked below.</p>
+          <br>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bi bi-pen"></i></div>
+            <h4 class="title"><a href="https://drpeabody.github.io/acad/index.html">Projects in Physics</a></h4>
+            <p class="description">A brief overview of the projects and project reports from my research in physics</p>
+          </div>
+          
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bi bi-cash"></i></div>
+            <h4 class="title"><a href="assets/docs/Slice_of_Wonderland_Economic_Model.pdf">Report on Investment Tokenization</a></h4>
+            <p class="description">Revenue Analysis of a Marketplace for Tokenization and Sharing of Investments</p>
+          </div>
+
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bx bxs-hot"></i></div>
+            <h4 class="title"><a href="simulations/1-conduction-of-heat/index.html">Heat Conduction Simulation</a></h4>
+            <p class="description">Simulation of change in temperature over time of a square flat material sandwiched between hot and cold </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bi bi-camera"></i></div>
+            <h4 class="title"><a href="simulations/4-ascii-encoded-video/index.html">ASCII Encoded Video</a></h4>
+            <p class="description">Watch the video recorded by your camera in Text with Matrix themed colors</p>
+          </div>
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bi bi-globe2"></i></div>
+            <h4 class="title"><a href="games/MRisk/mrisk.html">MRisk</a></h4>
+            <p class="description">A Risk themed game made entirely from HTML + JS</p>
+          </div>
+          <div class="col-lg-4 col-md-6 icon-box">
+            <div class="icon"><i class="bi bi-controller"></i></div>
+            <h4 class="title"><a href="games/texas/texas.html">Texas</a></h4>
+            <p class="description">A small experiment for a single page, text-based adventure game</p>
+          </div>
+          
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+    <!-- ======= Blog Section ======= -->
+    <section class="resume">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Blog Articles</h2>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="resume-item">
+              <h4>Escalations in Human Conflict</h4>
+              <h5>
+                2 Dec 2023
+                <a href="articles/EscalationIsADevil.html"> <span class="bi bi-chevron-right"></span>  Read Essay </a>
+              </h5>
+              <p> An Essay about trying to understand the subjective definitions of being Good, 
+                and trying to reason how we can be Good in an increasingly morally ambiguous world.
+              </p>
+              
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Resume Section -->
+
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>About</h2>
+          <p>
+            I am a software developer and physics enthusiast currently working as Application Developer at Oracle Corporation, India. 
+            If Im not working you would find me gaming, coding or walking. Fan of good wines, chocolates, gadgets and Batman.
+          </p>
+          <br>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4" >
+            <img src="assets/img/profile-img.jpg" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-8 pt-4 pt-lg-0 content" >
+            <h3>Physics Enthusiast &amp; Software Developer</h3>
+            <p class="fst-italic">
+              Also play Age of Empires 2 DE, Destiny 2, Minecraft and other cool games. 
+            </p>
+            <div class="row">
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Birthday:</strong> <span>22 December 1997</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Website:</strong> <span>drpeabody.github.io</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Hometown:</strong> <span>Lucknow, India</span></li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <ul>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Undergrad:</strong> <span>IIT Hyderabad</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Major:</strong> <span>Engineering Physics</span></li>
+                  <li><i class="bi bi-chevron-right"></i> <strong>Minor:</strong> <span>Computer Science</span></li>
+                </ul>
+              </div>
+            </div>
+            <!-- <div id="contact" class="col-lg-8 pt-4 pt-lg-0 content" > -->
+              <h3 id="contact">Contact</h3>
+              <p>Feel free to contact me over email.</p>
+              <div class="row">
+                <div class="col-lg-6">
+                  <ul>
+                    <li><i class="bi bi-envelope"></i><p>abhishek.agarwal@alumni.iith.ac.in</p></li>
+                    <li><i class="bi bi-envelope"></i><p>abhiagar97@gmail.com</p></li>
+                  </ul>
+                </div>
+              </div>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
+    </section><!-- End About Section -->
+
+  </main><!-- End #main -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/purecounter/purecounter.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+
 </body>
+
 </html>
