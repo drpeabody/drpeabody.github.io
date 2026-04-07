@@ -81,9 +81,31 @@
     </script>
     <script type="text/javascript">
         const allTests = {
-            "util-test-1": () => { return false; },
-            "util-test-2": () => { return true; },
-            "util-test-3": () => { throw new Error("Test Error"); },
+            "util-test-1": () => {
+                // assert should throw when value is null/empty and NotEmpty is expected
+                try {
+                    assert(null, NotEmpty, 'Should throw for null');
+                    return false; // should not reach here
+                } catch(e) {
+                    return true;
+                }
+            },
+            "util-test-2": () => {
+                // assert should not throw when two values are equal
+                try {
+                    assert('hello', 'hello', 'Should not throw for equal values');
+                    return true;
+                } catch(e) {
+                    return false;
+                }
+            },
+            "util-test-3": () => {
+                // final should create a non-writable property
+                let obj = {};
+                final(obj, 'x', 42);
+                try { obj.x = 99; } catch(e) { /* strict mode throws on write */ }
+                return obj.x === 42;
+            },
             "attack.resolveAttackTest.001": () => {
                 let z1 = new Zone("Troy", 0, 0, ["Rome"]);
                 let z2 = new Zone("Rome", 0, 0, ["Troy"]);
